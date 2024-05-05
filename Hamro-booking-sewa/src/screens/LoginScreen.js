@@ -62,11 +62,11 @@ export default function LoginScreen({ navigation }) {
           <Text style={styles.forgot}>Forgot your password ?</Text>
         </TouchableOpacity>
       </View>
-      <Button mode="contained" onPress={onLoginPressed}>
+      <Button mode="outlined" onPress={onLoginPressed} style={{color:"#CBC3E3"}}>
         Log in
       </Button>
       <View style={styles.row}>
-        <Text>You do not have an account yet ?</Text> 
+        <Text>Don't have an account yet ?</Text> 
       </View>
       <View style={styles.row}>
       <TouchableOpacity onPress={() => navigation.replace('RegisterScreen')}>

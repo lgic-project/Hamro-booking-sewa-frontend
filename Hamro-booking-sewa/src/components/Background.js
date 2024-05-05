@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: "auto",
     objectFit:"contain",
-    backgroundColor: theme.colors.surface,
+    backgroundColor: '#fff',
   },
   container: {
     flex: 1,

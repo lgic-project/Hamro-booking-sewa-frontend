@@ -14,7 +14,7 @@ export default function StartScreen({ navigation }) {
           Start Booking Your Desired Hotel Rooms.
         </Paragraph>
       <Button
-        mode="contained"
+        mode="outlined"
         onPress={() => navigation.navigate('LoginScreen')}
       >
         Log in

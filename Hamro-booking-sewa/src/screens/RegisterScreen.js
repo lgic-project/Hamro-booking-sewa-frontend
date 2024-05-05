@@ -47,7 +47,7 @@ export default function RegisterScreen({ navigation }) {
     <Background>
       <BackButton goBack={navigation.goBack} />
       <Logo />
-      <Header>Welcome.</Header>
+      <Header>Fill up your details</Header>
       <TextInput
         label="First Name"
         returnKeyType="next"
@@ -95,11 +95,11 @@ export default function RegisterScreen({ navigation }) {
         keyboardType="numeric"
       />
       <Button
-        mode="contained"
+        mode="outlined"
         onPress={onSignUpPressed}
-        style={{ marginTop: 24 }}
+        style={{ marginTop: 24, justifyContent: "center" }}
       >
-        Next
+        Register
       </Button>
       <View style={styles.row}>
         <Text>I already have an account !</Text>
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   link: {
-    fontWeight: 'bold',
+    fontWeight: '800',
     color: theme.colors.primary,
   },
 })
