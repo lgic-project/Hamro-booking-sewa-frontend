@@ -38,7 +38,7 @@ export default function ResetPasswordScreen({ navigation }) {
         description="You will receive an email with the reset link."
       />
       <Button
-        mode="contained"
+        mode="outlined"
         onPress={sendResetPasswordEmail}
         style={{ marginTop: 16 }}
       >
