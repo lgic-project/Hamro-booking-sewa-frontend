@@ -21,7 +21,7 @@ export default function RegisterScreen({ navigation }) {
   const [email, setEmail] = useState({ value: '', error: '' })
   const [password, setPassword] = useState({ value: '', error: '' })
   const [phoneNumber,setPhoneNumber] = useState({ value: '', error: '' })
-  const apiUrl = 'http://192.168.1.71:8000/api/userReg';
+  // const apiUrl = 'http://127.0.0.1:8000/json-owner';
 
   const onSignUpPressed = () => {
     const firstNameError = firstNameValidator(firstname.value)
@@ -38,51 +38,11 @@ export default function RegisterScreen({ navigation }) {
       return
     }
 
-    // Construct the user data object to be sent to the API
-    const userData = {
-      first_name: firstname.value,
-      last_name: lastname.value,
-      email: email.value,
-      password: password.value,
-      phone_number: phoneNumber.value,
-    };
-
-    // Make a POST request to the API
-    fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(userData),
-      timeout: 10000, // Increase timeout to 10 seconds (in milliseconds)
-  })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Error registering user');
-      }
-      return response.json();
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Dashboard' }],
     })
-    .then(data => {
-      // Handle successful registration
-      Alert.alert('Success', 'User registered successfully');
-      // You can navigate to another screen or perform other actions upon successful registration
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'StartScreen' }],
-      });
-    })
-    .catch(error => {
-      // Handle registration error
-      Alert.alert('Error', 'An error occurred while registering. Please try again.');
-      console.error('Error:', error);
-    });
   }
-
-  //   navigation.reset({
-  //     index: 0,
-  //     routes: [{ name: 'Dashboard' }],
-  //   })
-  // }
 
   return (
     
