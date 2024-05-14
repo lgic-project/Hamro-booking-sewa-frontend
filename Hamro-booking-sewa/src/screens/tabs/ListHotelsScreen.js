@@ -1,13 +1,83 @@
 // ListHotelsScreen.js
-import React from 'react';
-import { View, Text } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet ,FlatList, ActivityIndicator } from 'react-native';
+import { Avatar, Button, Card, Text } from 'react-native-paper';
+import Modal from "react-native-modal";
 
 const ListHotelsScreen = () => {
+  const [data, setData] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [isModalVisible, setModalVisible] = useState(false);
+  const apiUrl = "http://192.168.1.71:8000/json-owner";
+
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
+
+  useEffect(()=> {
+    fetch(apiUrl)
+    .then((response)=>response.json())
+    .then((json)=>setData(json))
+    .catch((error)=>console.error(error))
+    .finally(()=>setLoading(false))
+  },[])
+  // Render list of hotels once data is fetched
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>List Hotels</Text>
-    </View>
+
+    <View style={styles.container}>
+    {loading ? (
+      <ActivityIndicator animating={true} color={'blue'} size={'large'} />
+    ) : (
+      <FlatList
+        data={data}
+        renderItem={({ item }) => (
+
+            
+            <Card style={styles.card}>
+            
+              
+            <Card.Cover style={styles.icon} source={{ uri: item.photos }} onError={console.log('Error loading image')} />
+            <Card.Title title={item.title} subtitle={item.location} />
+            <Card.Content>
+            <Text style={{ fontSize: 15, color: 'red' }}>Contact: {item.phone_number}</Text>
+            <Text style={{ fontSize: 15, color: 'blue' }}>Email: {item.email}</Text>
+            </Card.Content>
+            
+            </Card>
+          
+        )}
+        keyExtractor={(item, index) => index.toString()}
+        contentContainerStyle={styles.flatListContent}
+      />
+    )}
+  </View>
+
   );
 };
 
 export default ListHotelsScreen;
+
+const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: '#bcbcff',
+      padding: 10,
+      margin: 10,
+    },
+
+    flatListContent: {
+      paddingBottom: 20, // Adjust as needed
+      justifyContent: "center",
+      alignContent: "center"
+    },
+
+    icon: {
+      flex: 1,
+      height: 200,
+      width: "auto", // Adjust height as needed
+      resizeMode: "contain",
+    },
+    card : {
+      marginBottom: 10,
+    }
+});

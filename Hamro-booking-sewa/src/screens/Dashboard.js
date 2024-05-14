@@ -10,38 +10,40 @@ import { AntDesign } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 const HomeStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
+  <Stack.Navigator screenOptions={{ headerShown: false , cardStyle: { flex: 1 },}} >
     <Stack.Screen name="HomeScreen" component={HomeScreen} />
   </Stack.Navigator>
 );
 
 const ListHotelsStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
+  <Stack.Navigator screenOptions={{ headerShown: false, cardStyle: { flex: 1 }, }}>
     <Stack.Screen name="ListHotels" component={ListHotelsScreen} />
   </Stack.Navigator>
 );
 
 const BookedHotelsStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
+  <Stack.Navigator screenOptions={{ headerShown: false, cardStyle: { flex: 1 }, }}>
     <Stack.Screen name="BookedHotels" component={BookedHotelsScreen} />
   </Stack.Navigator>
 );
 
 const MenuStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
+  <Stack.Navigator screenOptions={{ headerShown: false, cardStyle: { flex: 1 }, }}>
     <Stack.Screen name="MenuScreen" component={MenuScreen} />
   </Stack.Navigator>
 );
 
 const Dashboard = () => {
   return (
-    <NavigationContainer independent={true}>
-      <Tab.Navigator>
+    <NavigationContainer independent={true} >
+      <SafeAreaView style={{flex: 1}}>
+      <Tab.Navigator backBehavior='firstRoute' screenOptions={{headerShown:false}}>
         <Tab.Screen name="Home" component={HomeStack} options={{
             tabBarIcon: ({ color, size }) => (
               <AntDesign name="home" color='black' size={30} />
@@ -63,6 +65,7 @@ const Dashboard = () => {
             ),
           }} />
       </Tab.Navigator>
+    </SafeAreaView>
     </NavigationContainer>
   );
 };
