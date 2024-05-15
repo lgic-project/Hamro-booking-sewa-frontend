@@ -13,7 +13,6 @@ import { passwordValidator } from '../helpers/passwordValidator'
 import { firstNameValidator } from '../helpers/firstNameValidator'
 import { lastNameValidator } from '../helpers/lastNameValidator'
 import { phoneNumberValidator } from '../helpers/phoneNumberValidator'
-import { ScrollView } from 'react-native-gesture-handler'
 
 export default function RegisterScreen({ navigation }) {
   const [firstname, setFirstName] = useState({ value: '', error: '' })
@@ -21,7 +20,9 @@ export default function RegisterScreen({ navigation }) {
   const [email, setEmail] = useState({ value: '', error: '' })
   const [password, setPassword] = useState({ value: '', error: '' })
   const [phoneNumber,setPhoneNumber] = useState({ value: '', error: '' })
-  // const apiUrl = 'http://127.0.0.1:8000/json-owner';
+
+
+  
 
   const onSignUpPressed = () => {
     const firstNameError = firstNameValidator(firstname.value)
@@ -38,9 +39,16 @@ export default function RegisterScreen({ navigation }) {
       return
     }
 
+     // Log the entered values
+     console.log("First Name:", firstname.value)
+     console.log("Last Name:", lastname.value)
+     console.log("Email:", email.value)
+     console.log("Password:", password.value)
+     console.log("Phone Number:", phoneNumber.value)
+
     navigation.reset({
       index: 0,
-      routes: [{ name: 'Dashboard' }],
+      routes: [{ name: 'StartScreen' }],
     })
   }
 

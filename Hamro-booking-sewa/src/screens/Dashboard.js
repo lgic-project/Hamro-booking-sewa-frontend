@@ -46,22 +46,22 @@ const Dashboard = () => {
       <Tab.Navigator backBehavior='firstRoute' screenOptions={{headerShown:false}}>
         <Tab.Screen name="Home" component={HomeStack} options={{
             tabBarIcon: ({ color, size }) => (
-              <AntDesign name="home" color='black' size={30} />
+              <AntDesign name="home" color='black' size={35} />
             ),
           }} />
         <Tab.Screen name="List Hotels" component={ListHotelsStack} options={{
             tabBarIcon: ({ color, size }) => (
-              <Entypo name="list" size={24} color="black" />
+              <Entypo name="list" size={35} color="black" />
             ),
           }} />
         <Tab.Screen name="Booked Hotels" component={BookedHotelsStack} options={{
             tabBarIcon: ({ color, size }) => (
-              <FontAwesome5 name="hotel" size={24} color="black" />
+              <FontAwesome5 name="hotel" size={30} color="black" />
             ),
           }} />
         <Tab.Screen name="Menu" component={MenuStack} options={{
             tabBarIcon: ({ color, size }) => (
-              <MaterialCommunityIcons name="microsoft-xbox-controller-menu" size={24} color="black" />
+              <MaterialCommunityIcons name="microsoft-xbox-controller-menu" size={35} color="black" />
             ),
           }} />
       </Tab.Navigator>
