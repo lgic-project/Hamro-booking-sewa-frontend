@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet ,FlatList, ActivityIndicator } from 'react-native';
 import { Avatar, Button, Card, Text } from 'react-native-paper';
-import Modal from "react-native-modal";
 
 const ListHotelsScreen = () => {
   const [data, setData] = useState([])
