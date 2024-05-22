@@ -8,6 +8,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import UserProfile from "./UserProfile";
 import Settings from "./Settings";
+import Logout from "./Logout";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from '@react-navigation/drawer';
@@ -49,7 +50,7 @@ const MenuScreen = () => {
     
     <NavigationContainer independent={true}>
       <View style={{flex: 1}}>
-      <Drawer.Navigator backBehavior="firstRoute">
+      <Drawer.Navigator backBehavior="firstRoute" >
       <Drawer.Screen name="Profile" component={UserProfileStack} options={{drawerIcon: ({ color, size }) => (
               <FontAwesome name="user" size={30} color="black" />
             ), drawerLabelStyle: {fontSize: 18, fontWeight:"bold"}}} />
