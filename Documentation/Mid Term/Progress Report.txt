@@ -1,3 +1,23 @@
 Diagram Needed:
 Flowchart
 Data Flow Diagram: Different Levels
+
+Completed
+1.Fetch data from laravel in mobile app in JSon format
+2. Sections for hotel and hotel rooms created in backend
+
+
+Needs to be done
+1.
+2.
+3.
+
+
+Bottlenecks
+1. API integration
+2. Fetching pictures in JSon format
+3. Manipulation of multiple pictures
+
+
+Other issues-
+  
