@@ -1,6 +1,6 @@
 // ListHotelsScreen.js
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet ,FlatList, ActivityIndicator } from 'react-native';
+import { View, StyleSheet ,FlatList, ActivityIndicator, Searchbar } from 'react-native';
 import { Avatar, Button, Card, Text } from 'react-native-paper';
 
 const ListHotelsScreen = () => {
@@ -8,6 +8,7 @@ const ListHotelsScreen = () => {
   const [loading, setLoading] = useState(true)
   const [isModalVisible, setModalVisible] = useState(false);
   const apiUrl = "http://192.168.1.71:8000/json-owner";
+  const [searchQuery, setSearchQuery] = useState('');
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -22,8 +23,9 @@ const ListHotelsScreen = () => {
   },[])
   // Render list of hotels once data is fetched
   return (
-
+    
     <View style={styles.container}>
+      
     {loading ? (
       <ActivityIndicator animating={true} color={'blue'} size={'large'} />
     ) : (
@@ -59,7 +61,7 @@ export default ListHotelsScreen;
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#bcbcff',
+      backgroundColor: '#fff',
       padding: 10,
       margin: 10,
     },

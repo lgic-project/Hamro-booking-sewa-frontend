@@ -1,11 +1,52 @@
-import {View, Text} from 'react-native';
+import { useState } from 'react';
+import {View, Text, StyleSheet, TouchableOpacity, Switch} from 'react-native';
 
 const Settings = () => {
-    return(
-        <View>
-            <Text>Settings Section</Text>
+  
+  const [isNotificationOn, setIsNotificationOn] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  const onToggleSwitch = () => setIsNotificationOn(!isNotificationOn);
+  const onThemeSwitch = () => setIsDarkMode(!isDarkMode);
+
+  return(
+        <View style={styles.container}>
+          <View style={styles.theme}>
+          <Text style={styles.label}>Enable Notifications</Text>
+            <Switch value={isNotificationOn} onValueChange={onToggleSwitch} />
+            </View>
+            
+            <View style={styles.theme}>
+            <Text style={styles.label}>Theme Mode</Text>
+            <Switch value={isDarkMode} onValueChange={onThemeSwitch} />
+            </View>
+            
         </View>
+        
     )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 16,
+    backgroundColor: 'white',
+    margin: 16,
+    borderRadius: 8,
+    elevation: 2, // Adds shadow for Android
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  label: {
+    fontSize: 16,
+  },
+  theme: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  }
+});
 
 export default Settings;
