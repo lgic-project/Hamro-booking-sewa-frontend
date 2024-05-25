@@ -48,10 +48,10 @@ const UserProfile = () => {
           <Text style={styles.text}>{phoneNumber}</Text>
         )}
         {editMode ? (
-          <Button mode="contained" onPress={handleSave} >Save</Button>
+          <Button mode="contained" onPress={handleSave} style={styles.button}>Save</Button>
         ) : (
-          <TouchableOpacity onPress={() => setEditMode(true)}>
-            <Text style={styles.editButton}>Edit</Text>
+          <TouchableOpacity onPress={() => setEditMode(true)} style={styles.button}>
+            <Text style={styles.buttonText}>Edit</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -62,45 +62,51 @@ const UserProfile = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#f0f0f0',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f0f0f0',
   },
   profileContainer: {
+    // flex: 1,
+    width: '95%',
     backgroundColor: '#fff',
-    padding: 100,
+    padding: 20,
     borderRadius: 10,
     elevation: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   profilePic: {
     width: 100,
     height: 100,
     borderRadius: 50,
     marginBottom: 20,
-    alignSelf: 'center',
   },
   label: {
-    fontSize: 28,
+    fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 5,
   },
   text: {
-    fontSize: 20,
+    fontSize: 16,
     marginBottom: 10,
+    textAlign: 'center',
   },
   input: {
-    backgroundColor: '#f9f9f9',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    width: '100%',
     marginBottom: 10,
-    borderRadius: 5,
   },
-  editButton: {
-    color: '#007bff',
+  button: {
+    backgroundColor: '#007bff',
     borderRadius: 5,
-    textDecorationLine: 'none',
-    alignSelf: 'flex-end',
-    fontSize: 25,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginTop: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    textAlign: 'center',
   },
 });
 
