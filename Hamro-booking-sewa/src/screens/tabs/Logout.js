@@ -1,74 +1,86 @@
-import * as React from 'react';
-import { useState } from 'react';
-import { StyleSheet } from 'react-native';
-import UserProfile from './UserProfile';
-import { Dialog, Portal, Text, Button, Modal, PaperProvider  } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
+import React from "react";
+import { View, Text, Modal, StyleSheet, TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { LogoutStack } from "./MenuScreen";
+import LoginScreen from "../LoginScreen";
 
-
-const Logout = () => {
-    const [visible, setVisible] = React.useState(false);
-
-    const showModal = () => setVisible(true);
-    const hideModal = () => setVisible(false);
-    const containerStyle = {backgroundColor: '#CDC8C8', padding: 20};
+const Logout = ({ visible, onCancel }) => {
+  const navigation = useNavigation();
 
   
 
-  const handleYes = () =>{
-    console.log("Yes pressed");
-    hideModal();
-}
+  const handleCancel = () => {
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "Profile"}],
+    });
+  };
 
-const handleCancel = () =>{
-    console.log("Cancel pressed");
-    // hideDialog();
-    // navigation.navigate(UserProfile);
-}
+  const handleLogout = () => {
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "LoginScreen" }],
+    });
+  };
 
   return (
-    // <Portal>
-    //   <Dialog visible={{showDialog}} onDismiss={hideDialog}>
-    //     <Dialog.Title style={styles.title}>Are you sure you want to logout?</Dialog.Title>
-    //     <Dialog.Actions>
-    //       <Button onPress={handleYes}>Yes</Button>
-    //       <Button onPress={handleCancel}>Cancel</Button>
-    //     </Dialog.Actions>
-    //   </Dialog>
-    // </Portal>
-
-    <PaperProvider>
-      <Portal>
-        <Modal visible={showModal} onDismiss={hideModal} contentContainerStyle={containerStyle}>
-          <Text style={{fontSize:20, textAlign:'center', marginBottom:20}}>Are you sure you want to logout?</Text>
-          <Button style={{marginBottom: 10}} mode="contained" onPress={handleYes}>Yes</Button>
-          <Button style={{marginBottom: 10}} mode="contained" onPress={handleCancel}>No</Button>
-        </Modal>
-      </Portal>
-    </PaperProvider>
+    <Modal visible={visible} transparent animationType="fade">
+      <View style={styles.container}>
+        <View style={styles.modal}>
+          <Text style={styles.title}>Are you sure you want to logout?</Text>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity onPress={handleCancel} style={[styles.button, styles.cancelButton]}>
+              <Text style={styles.buttonText}>Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleLogout} style={[styles.button, styles.confirmButton]}>
+              <Text style={styles.buttonText}>Logout</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </Modal>
   );
 };
 
 const styles = StyleSheet.create({
-  title: {
-    textAlign: 'center',
+  container: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
   },
-})
+  modal: {
+    backgroundColor: "#fff",
+    padding: 20,
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  title: {
+    fontSize: 18,
+    marginBottom: 20,
+    textAlign: "center",
+    color: "red",
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+  button: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    marginHorizontal: 10,
+  },
+  cancelButton: {
+    backgroundColor: "grey",
+  },
+  confirmButton: {
+    backgroundColor: "red",
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 16,
+  },
+});
 
 export default Logout;
-
-
-
-// import { View, Text, Alert } from "react-native";
-// import StartScreen from "../StartScreen";
-// import { TouchableOpacity } from "react-native";
-
-
-
-// export default function Logout(){
-//     return(
-//     <View style={{flex:1 }}>
-//         <Alert>Are you sure y</Alert>
-//     </View>
-//     );
-// };

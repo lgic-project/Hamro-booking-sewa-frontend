@@ -29,6 +29,7 @@ const ListHotelsScreen = () => {
     {loading ? (
       <ActivityIndicator animating={true} color={'blue'} size={'large'} />
     ) : (
+      
       <FlatList
         data={data}
         renderItem={({ item }) => (
