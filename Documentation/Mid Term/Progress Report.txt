@@ -8,9 +8,9 @@ Completed
 
 
 Needs to be done
-1.
-2.
-3.
+1.Multi level authentication using laravel
+2.Handling Post Method APIS
+3.Booking Confirmation
 
 
 Bottlenecks
