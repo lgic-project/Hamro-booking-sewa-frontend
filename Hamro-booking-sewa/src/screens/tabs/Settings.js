@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Switch} from 'react-native';
+import BackButton from '../../components/BackButton';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-const Settings = () => {
+const Settings = ({navigation}) => {
   
   const [isNotificationOn, setIsNotificationOn] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -10,7 +12,9 @@ const Settings = () => {
   const onThemeSwitch = () => setIsDarkMode(!isDarkMode);
 
   return(
-        <View style={styles.container}>
+    <SafeAreaView>
+      <BackButton goBack={navigation.goBack} />
+    <View style={styles.container}>
           <View style={styles.theme}>
           <Text style={styles.label}>Enable Notifications</Text>
             <Switch value={isNotificationOn} onValueChange={onToggleSwitch} />
@@ -22,12 +26,14 @@ const Settings = () => {
             </View>
             
         </View>
+        </SafeAreaView>
         
     )
 }
 
 const styles = StyleSheet.create({
   container: {
+    marginTop: 50,
     padding: 16,
     backgroundColor: 'white',
     margin: 16,

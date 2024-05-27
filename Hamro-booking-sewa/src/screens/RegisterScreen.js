@@ -91,6 +91,7 @@ export default function RegisterScreen({ navigation }) {
       })
       .then(json => {
         console.log('User registered successfully', json);
+        Alert.alert('User registered Successfully!');
         navigation.navigate('StartScreen');
       })
       .catch(error => {

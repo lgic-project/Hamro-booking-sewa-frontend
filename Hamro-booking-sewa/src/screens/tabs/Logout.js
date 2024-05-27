@@ -1,26 +1,16 @@
 import React from "react";
 import { View, Text, Modal, StyleSheet, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { LogoutStack } from "./MenuScreen";
-import LoginScreen from "../LoginScreen";
 
-const Logout = ({ visible, onCancel }) => {
+const Logout = ({ visible }) => {
   const navigation = useNavigation();
 
-  
-
   const handleCancel = () => {
-    navigation.reset({
-      index: 0,
-      routes: [{ name: "Profile"}],
-    });
+    navigation.navigate("MenuScreen");
   };
 
   const handleLogout = () => {
-    navigation.reset({
-      index: 0,
-      routes: [{ name: "LoginScreen" }],
-    });
+    console.log('Logout Pending');
   };
 
   return (
@@ -30,10 +20,10 @@ const Logout = ({ visible, onCancel }) => {
           <Text style={styles.title}>Are you sure you want to logout?</Text>
           <View style={styles.buttonContainer}>
             <TouchableOpacity onPress={handleCancel} style={[styles.button, styles.cancelButton]}>
-              <Text style={styles.buttonText}>Cancel</Text>
+              <Text style={styles.buttonText}>No</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={handleLogout} style={[styles.button, styles.confirmButton]}>
-              <Text style={styles.buttonText}>Logout</Text>
+              <Text style={styles.buttonText}>Yes</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -51,35 +41,48 @@ const styles = StyleSheet.create({
   },
   modal: {
     backgroundColor: "#fff",
-    padding: 20,
-    borderRadius: 10,
+    padding: 30,
+    borderRadius: 15,
     alignItems: "center",
+    width: '80%',
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   title: {
-    fontSize: 18,
+    fontSize: 20,
     marginBottom: 20,
     textAlign: "center",
-    color: "red",
+    color: "#333",
+    fontWeight: "bold",
   },
   buttonContainer: {
     flexDirection: "row",
-    justifyContent: "center",
+    justifyContent: "space-between",
+    width: '100%',
   },
   button: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
+    flex: 1,
+    paddingVertical: 15,
     marginHorizontal: 10,
+    borderRadius: 25,
+    alignItems: "center",
   },
   cancelButton: {
-    backgroundColor: "grey",
+    backgroundColor: "#6c757d",
   },
   confirmButton: {
-    backgroundColor: "red",
+    backgroundColor: "#dc3545",
   },
   buttonText: {
     color: "white",
-    fontSize: 16,
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });
 

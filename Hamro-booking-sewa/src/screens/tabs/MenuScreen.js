@@ -1,63 +1,53 @@
-import React from "react";
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import { FontAwesome, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
-import UserProfile from "./UserProfile"; // Adjust the path as necessary
-import Settings from "./Settings"; // Adjust the path as necessary
-import Logout from "./Logout"; // Adjust the path as necessary
-import { createStackNavigator } from "@react-navigation/stack";
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
-const Drawer = createDrawerNavigator();
-const Stack = createStackNavigator();
+const MenuScreen = ({ navigation }) => {
+  return (
+    <View style={styles.container}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('UserProfile')}
+      >
+        <Text style={styles.buttonText}> Profile</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('Settings')}
+      >
+        <Text style={styles.buttonText}>Settings</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('Logout')}
+      >
+        <Text style={styles.buttonText}>Logout</Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
 
-const UserProfileStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="UserProfile" component={UserProfile} />
-  </Stack.Navigator>
-);
-
-const SettingStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="Setting" component={Settings} />
-  </Stack.Navigator>
-);
-
-const LogoutStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="Logout" component={Logout} />
-  </Stack.Navigator>
-);
-
-const DrawerNavigator = () => (
-  <Drawer.Navigator backBehavior="firstRoute">
-    <Drawer.Screen
-      name="Profile"
-      component={UserProfileStack}
-      options={{
-        drawerIcon: ({ color, size }) => <FontAwesome name="user" size={30} color="black" />,
-        drawerLabelStyle: { fontSize: 18, fontWeight: "bold" },
-      }}
-    />
-    <Drawer.Screen
-      name="Settings"
-      component={SettingStack}
-      options={{
-        drawerIcon: ({ color, size }) => <Ionicons name="settings" size={26} color="black" />,
-        drawerLabelStyle: { fontSize: 18, fontWeight: "bold" },
-      }}
-    />
-    <Drawer.Screen
-      name="Logout"
-      component={LogoutStack}
-      options={{
-        drawerIcon: ({ color, size }) => <MaterialCommunityIcons name="logout" size={28} color="black" />,
-        drawerLabelStyle: { fontSize: 18, fontWeight: "bold" },
-      }}
-    />
-  </Drawer.Navigator>
-);
-
-const MenuScreen = () => (
-  <DrawerNavigator />
-);
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginTop: 50,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    backgroundColor: '#f8f8f8', // Optional background color for better visibility
+  },
+  button: {
+    backgroundColor: '#841584',
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 25,
+    marginVertical: 10,
+    alignItems: 'center',
+    width: '80%', // Make button width responsive
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+});
 
 export default MenuScreen;
