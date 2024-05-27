@@ -46,7 +46,7 @@ const DrawerNavigator = () => (
       }}
     />
     <Drawer.Screen
-      name="LogoutStack"
+      name="Logout"
       component={LogoutStack}
       options={{
         drawerIcon: ({ color, size }) => <MaterialCommunityIcons name="logout" size={28} color="black" />,
