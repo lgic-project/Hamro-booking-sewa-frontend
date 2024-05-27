@@ -7,7 +7,7 @@ const HomeScreen = () => {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
   const [isModalVisible, setModalVisible] = useState(false);
-  const apiUrl = "http://192.168.1.71:8000/json-room";
+  const apiUrl = "http://10.0.2.2:8000/json-room";
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
