@@ -5,6 +5,7 @@ import UserProfile from './UserProfile'; // Adjust the path as necessary
 import Settings from './Settings'; // Adjust the path as necessary
 import Logout from './Logout'; // Adjust the path as necessary
 import MenuScreen from './MenuScreen'; // Adjust the path as necessary
+import LoginScreen from '../LoginScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -37,6 +38,10 @@ const MainTabNavigator = () => (
       options={{
         tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="logout" size={28} color={color} />,
       }}
+    />
+    <Tab.Screen
+      name="LoginScreen"
+      component={LoginScreen}
     />
   </Tab.Navigator>
 );

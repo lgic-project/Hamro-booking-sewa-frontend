@@ -23,7 +23,7 @@ export default function RegisterScreen({ navigation }) {
   const [csrfToken, setCsrfToken] = useState('');
 
   useEffect(() => {
-    fetch('http://10.0.2.2:8000/csrf-token', {
+    fetch('http://192.168.1.71:8000/csrf-token', {
       method: 'GET',
       credentials: 'include', // Include cookies if necessary
     })
@@ -75,7 +75,7 @@ export default function RegisterScreen({ navigation }) {
       phone_number: phone_number.value,
     };
 
-    fetch('http://10.0.2.2:8000/localusers/add', {
+    fetch('http://192.168.1.71:8000/localusers/add', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

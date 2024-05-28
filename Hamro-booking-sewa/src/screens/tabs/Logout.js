@@ -10,7 +10,8 @@ const Logout = ({ visible }) => {
   };
 
   const handleLogout = () => {
-    console.log('Logout Pending');
+    // console.log('Logout Pending');
+    navigation.navigate('LoginScreen');
   };
 
   return (

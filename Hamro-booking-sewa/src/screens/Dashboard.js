@@ -11,6 +11,7 @@ import Settings from './tabs/Settings'; // Adjust the path as necessary
 import Logout from './tabs/Logout'; // Adjust the path as necessary
 import { AntDesign, Entypo, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Booking from './tabs/Booking';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -18,6 +19,7 @@ const Stack = createStackNavigator();
 const HomeStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false , cardStyle: { flex: 1 },}} >
     <Stack.Screen name="HomeScreen" component={HomeScreen} />
+    <Stack.Screen name="Booking" component={Booking} />
   </Stack.Navigator>
 );
 

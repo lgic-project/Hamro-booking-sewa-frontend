@@ -1,48 +1,115 @@
-// HomeScreen.js
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet ,FlatList, ActivityIndicator } from 'react-native';
-import { Avatar, Button, Card, Text } from 'react-native-paper';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, StyleSheet, FlatList, ActivityIndicator, TextInput, Modal, TouchableOpacity } from 'react-native';
+import { Card, Text, Button } from 'react-native-paper';
 
 const HomeScreen = () => {
-  const [data, setData] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [isModalVisible, setModalVisible] = useState(false);
-  const apiUrl = "http://10.0.2.2:8000/json-room";
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const apiUrl = "http://192.168.1.71:8000/json-room";
+  const homeUrl = "http://192.168.1.71:8000/images/hotel/";
 
-  const toggleModal = () => {
-    setModalVisible(!isModalVisible);
+  const fetchData = async () => {
+    try {
+      const response = await fetch(apiUrl);
+      const json = await response.json();
+      setData(json);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
   };
 
-  useEffect(()=> {
-    fetch(apiUrl)
-    .then((response)=>response.json())
-    .then((json)=>setData(json))
-    .catch((error)=>console.error(error))
-    .finally(()=>setLoading(false))
-  },[])
-  // Render list of hotels once data is fetched
-  return (
+  useEffect(() => {
+    fetchData();
+  }, []);
 
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchData();
+  };
+
+  const filteredData = data.filter(item =>
+    item.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const renderItem = useCallback(({ item }) => (
+    <View style={styles.cardContainer}>
+      <Card style={styles.card}>
+        <Card.Cover
+          style={styles.icon}
+          source={{ uri: homeUrl + 'room/' + item.room_thumbnail }}
+          onError={() => console.log('Error loading image')}
+        />
+        <Card.Content style={styles.cardContent}>
+          <View style={styles.textContainer}>
+            <Text style={styles.title}>{item.title}</Text>
+            <Text style={styles.subtitle}>Total Rooms: {item.total_rooms}</Text>
+            <Button mode="contained" onPress={() => {
+              setSelectedItem(item);
+              setModalVisible(true);
+            }}>
+              View Details
+            </Button>
+          </View>
+        </Card.Content>
+      </Card>
+    </View>
+  ), []);
+
+  return (
     <View style={styles.container}>
+      <TextInput
+        style={styles.searchBar}
+        placeholder="Search rooms..."
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+      />
       {loading ? (
         <ActivityIndicator animating={true} color={'blue'} size={'large'} />
       ) : (
         <FlatList
-          data={data}
-          renderItem={({ item }) => (
-            <Card style={styles.card}>
-              <Card.Cover style={styles.icon} source={{ uri: item.room_thumbnail }} onError={console.log('Error loading image')} />
-              <Card.Title title={item.title} subtitle={`Rooms: ${item.total_rooms}`} />
-              <Card.Content>
-                <Text style={styles.priceText}>Price: {item.price}</Text>
-                <Text style={styles.availableText}>Available: {item.is_available ? 'Yes' : 'No'}</Text>
-                <Text style={styles.descriptionText}>Description: {item.description}</Text>
-              </Card.Content>
-            </Card>
-          )}
+          data={filteredData}
+          renderItem={renderItem}
           keyExtractor={(item, index) => index.toString()}
           contentContainerStyle={styles.flatListContent}
+          refreshing={refreshing}
+          onRefresh={onRefresh}
         />
+      )}
+      {selectedItem && (
+        <Modal
+          visible={modalVisible}
+          transparent={true}
+          animationType="slide"
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <View style={styles.modalBackground}>
+            <View style={styles.modalContainer}>
+              <Card style={styles.modalCard}>
+                <Card.Cover
+                  style={styles.icon}
+                  source={{ uri: homeUrl + 'room/' + selectedItem.room_thumbnail }}
+                  onError={() => console.log('Error loading image')}
+                />
+                <Card.Title title={selectedItem.title} subtitle={`Total Rooms: ${selectedItem.total_rooms}`} />
+                <Card.Content>
+                  <Text style={styles.priceText}>Price: {selectedItem.price}</Text>
+                  <Text style={styles.availableText}>Available: {selectedItem.is_available ? 'Yes' : 'No'}</Text>
+                  <Text style={styles.descriptionText}>{selectedItem.description}</Text>
+                </Card.Content>
+                <Card.Actions>
+                  <Button onPress={() => setModalVisible(false)}>Close</Button>
+                </Card.Actions>
+              </Card>
+            </View>
+          </View>
+        </Modal>
       )}
     </View>
   );
@@ -56,14 +123,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#f0f0f0',
     padding: 10,
   },
+  searchBar: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 10,
+    paddingHorizontal: 8,
+    borderRadius: 5,
+  },
   flatListContent: {
     paddingBottom: 20,
   },
   icon: {
-    height: 200,
+    height: 150,
     resizeMode: 'cover',
   },
-  card: {
+  cardContainer: {
     marginBottom: 15,
     borderRadius: 10,
     overflow: 'hidden',
@@ -73,6 +148,42 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 5,
     backgroundColor: '#fff',
+  },
+  card: {
+    borderRadius: 10,
+  },
+  cardContent: {
+    padding: 10,
+    backgroundColor: '#f9f9f9',
+    borderTopWidth: 1,
+    borderColor: '#ddd',
+  },
+  textContainer: {
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  subtitle: {
+    fontSize: 14,
+    marginBottom: 10,
+  },
+  modalBackground: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContainer: {
+    width: '90%',
+    backgroundColor: 'white',
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+  modalCard: {
+    borderRadius: 10,
   },
   priceText: {
     fontSize: 15,
