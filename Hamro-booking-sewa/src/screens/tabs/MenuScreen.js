@@ -1,38 +1,45 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
 
 const MenuScreen = ({ navigation }) => {
   return (
-    <View style={styles.container}>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('UserProfile')}
-      >
-        <Text style={styles.buttonText}> Profile</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('Settings')}
-      >
-        <Text style={styles.buttonText}>Settings</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('Logout')}
-      >
-        <Text style={styles.buttonText}>Logout</Text>
-      </TouchableOpacity>
-    </View>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.contentContainer}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('UserProfile')}
+        >
+          <Text style={styles.buttonText}> Profile</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('Settings')}
+        >
+          <Text style={styles.buttonText}>Settings</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('Logout')}
+        >
+          <Text style={styles.buttonText}>Logout</Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 50,
-    justifyContent: 'flex-start',
+    backgroundColor: '#f8f8f8',
+    paddingTop: 70, // Adjust top padding as needed
     alignItems: 'center',
-    backgroundColor: '#f8f8f8', // Optional background color for better visibility
+  },
+  contentContainer: {
+    flex: 1,
+    alignItems: 'center',
+    width: '100%',
+    paddingTop: 60, // Add some top padding to push content down
   },
   button: {
     backgroundColor: '#841584',

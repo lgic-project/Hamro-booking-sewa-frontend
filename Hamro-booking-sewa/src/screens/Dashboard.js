@@ -6,9 +6,9 @@ import HomeScreen from './tabs/HomeScreen';
 import ListHotelsScreen from './tabs/ListHotelsScreen';
 import BookedHotelsScreen from './tabs/BookedHotelsScreen';
 import MenuScreen from './tabs/MenuScreen';
-import UserProfile from './tabs/UserProfile'; // Adjust the path as necessary
-import Settings from './tabs/Settings'; // Adjust the path as necessary
-import Logout from './tabs/Logout'; // Adjust the path as necessary
+import UserProfile from './tabs/UserProfile'; 
+import Settings from './tabs/Settings'; 
+import Logout from './tabs/Logout'; 
 import { AntDesign, Entypo, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Booking from './tabs/Booking';
@@ -48,13 +48,24 @@ const Dashboard = () => {
   return (
     <NavigationContainer independent={true}>
       <SafeAreaView style={{flex: 1}}>
-        <Tab.Navigator backBehavior='firstRoute' screenOptions={{headerShown:false}}>
+        <Tab.Navigator
+          backBehavior='firstRoute'
+          screenOptions={{
+            headerShown:false,
+            tabBarActiveTintColor: 'black',
+            tabBarInactiveTintColor: 'gray',
+            tabBarLabelStyle: { fontSize: 12, fontWeight: 'bold' },
+            tabBarItemStyle: { paddingTop: 5 },
+            tabBarStyle: [{ display: 'flex' }, null]
+          }}
+        >
           <Tab.Screen 
             name="Home" 
             component={HomeStack} 
             options={{
+              headerShown:false,
               tabBarIcon: ({ color, size }) => (
-                <AntDesign name="home" color='black' size={35} />
+                <AntDesign name="home" size={25} color={color} />
               ),
             }} 
           />
@@ -62,8 +73,9 @@ const Dashboard = () => {
             name="List Hotels" 
             component={ListHotelsStack} 
             options={{
+              headerShown:false,
               tabBarIcon: ({ color, size }) => (
-                <Entypo name="list" size={35} color="black" />
+                <Entypo name="list" size={25} color={color} />
               ),
             }} 
           />
@@ -71,8 +83,9 @@ const Dashboard = () => {
             name="Booked Hotels" 
             component={BookedHotelsStack} 
             options={{
+              headerShown:false,
               tabBarIcon: ({ color, size }) => (
-                <FontAwesome5 name="hotel" size={30} color="black" />
+                <FontAwesome5 name="hotel" size={25} color={color} />
               ),
             }} 
           />
@@ -80,8 +93,9 @@ const Dashboard = () => {
             name="Menu" 
             component={MenuStack} 
             options={{
+              headerShown:false,
               tabBarIcon: ({ color, size }) => (
-                <MaterialCommunityIcons name="microsoft-xbox-controller-menu" size={35} color="black" />
+                <MaterialCommunityIcons name="menu" size={25} color={color} />
               ),
             }} 
           />

@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     padding: 10,
-    margin: 10,
+    margin: 5,
   },
   flatListContent: {
     paddingBottom: 20,
