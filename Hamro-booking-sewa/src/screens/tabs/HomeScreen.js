@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, StyleSheet, FlatList, ActivityIndicator, TextInput, Modal, TouchableOpacity } from 'react-native';
 import { Card, Text, Button } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
 
 const HomeScreen = () => {
   const [data, setData] = useState([]);
@@ -11,6 +12,8 @@ const HomeScreen = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const apiUrl = "http://192.168.1.71:8000/json-room";
   const homeUrl = "http://192.168.1.71:8000/images/hotel/";
+
+  const navigation = useNavigation();
 
   const fetchData = async () => {
     try {
@@ -105,6 +108,10 @@ const HomeScreen = () => {
                 </Card.Content>
                 <Card.Actions>
                   <Button onPress={() => setModalVisible(false)}>Close</Button>
+                  <Button onPress={() => {
+                    setModalVisible(false);
+                    navigation.navigate('Booking', { room: selectedItem });
+                  }}>Book Now</Button>
                 </Card.Actions>
               </Card>
             </View>

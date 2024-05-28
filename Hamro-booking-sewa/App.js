@@ -11,6 +11,7 @@ import {
   Dashboard,
 } from './src/screens';
 import handleLogout from './src/screens/tabs/Logout';
+import MainTabNavigator from './src/screens/tabs/MainTabNavigator';
 
 const Stack = createStackNavigator();
 
@@ -33,7 +34,7 @@ export default function App() {
             name="ResetPasswordScreen"
             component={ResetPasswordScreen}
           />
-          {/* <Stack.Screen name="Main" component={MainTabNavigator} /> */}
+          <Stack.Screen name="Main" component={MainTabNavigator} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>
