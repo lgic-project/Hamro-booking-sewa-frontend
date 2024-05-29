@@ -1,11 +1,11 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { FontAwesome, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import UserProfile from './UserProfile'; // Adjust the path as necessary
-import Settings from './Settings'; // Adjust the path as necessary
-import Logout from './Logout'; // Adjust the path as necessary
-import MenuScreen from './MenuScreen'; // Adjust the path as necessary
-import LoginScreen from '../LoginScreen';
+import UserProfile from './MenuScreen/UserProfile/UserProfile'; 
+import Settings from './MenuScreen/Settings/Settings'; 
+import Logout from '../Logout/Logout'; 
+import MenuScreen from './MenuScreen/MenuScreen'; 
+import LoginScreen from '../Login/LoginScreen';
 
 const Tab = createBottomTabNavigator();
 

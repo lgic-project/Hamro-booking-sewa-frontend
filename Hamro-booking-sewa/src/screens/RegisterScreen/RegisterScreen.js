@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { Text } from 'react-native-paper';
-import Background from '../components/Background';
-import Logo from '../components/Logo';
-import Header from '../components/Header';
-import Button from '../components/Button';
-import TextInput from '../components/TextInput';
-import BackButton from '../components/BackButton';
-import { theme } from '../core/theme';
-import { emailValidator } from '../helpers/emailValidator';
-import { passwordValidator } from '../helpers/passwordValidator';
-import { firstNameValidator } from '../helpers/firstNameValidator';
-import { lastNameValidator } from '../helpers/lastNameValidator';
-import { phoneNumberValidator } from '../helpers/phoneNumberValidator';
+import Background from '../../components/Background';
+import Logo from '../../components/Logo';
+import Header from '../../components/Header';
+import Button from '../../components/Button';
+import TextInput from '../../components/TextInput';
+import BackButton from '../../components/BackButton';
+import { theme } from '../../core/theme';
+import { emailValidator } from '../../helpers/emailValidator';
+import { passwordValidator } from '../../helpers/passwordValidator';
+import { firstNameValidator } from '../../helpers/firstNameValidator';
+import { lastNameValidator } from '../../helpers/lastNameValidator';
+import { phoneNumberValidator } from '../../helpers/phoneNumberValidator';
 
 export default function RegisterScreen({ navigation }) {
   const [first_name, setFirstName] = useState({ value: '', error: '' });

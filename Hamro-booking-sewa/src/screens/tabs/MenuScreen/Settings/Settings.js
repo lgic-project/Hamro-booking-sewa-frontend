@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Switch} from 'react-native';
-import BackButton from '../../components/BackButton';
+import BackButton from '../../../../components/BackButton';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Settings = ({navigation}) => {

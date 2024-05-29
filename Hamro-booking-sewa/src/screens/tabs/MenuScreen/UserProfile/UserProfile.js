@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
-import BackButton from '../../components/BackButton';
+import BackButton from '../../../../components/BackButton';
 
 const UserProfile = ({navigation}) => {
   const [editMode, setEditMode] = useState(false);
@@ -18,7 +18,7 @@ const UserProfile = ({navigation}) => {
     <View style={styles.container}>
       <BackButton goBack={navigation.goBack} />
       <View style={styles.profileContainer}>
-        <Image source={require('../../assets/profile.png')} style={styles.profilePic} />
+        <Image source={require('../../../../assets/profile.png')} style={styles.profilePic} />
         <Text style={styles.label}>User Name</Text>
         {editMode ? (
           <TextInput

@@ -10,7 +10,7 @@ import {
   ResetPasswordScreen,
   Dashboard,
 } from './src/screens';
-import handleLogout from './src/screens/tabs/Logout';
+import handleLogout from './src/screens/Logout/Logout';
 import MainTabNavigator from './src/screens/tabs/MainTabNavigator';
 import SplashScreen from './src/screens/splash/SplashScreen';
 
@@ -30,7 +30,6 @@ export default function App() {
           <Stack.Screen name="LoginScreen" component={LoginScreen} />
           <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
           <Stack.Screen name="Dashboard" component={Dashboard} />
-          <Stack.Screen name="Logout" component={handleLogout} />
           <Stack.Screen
             name="ResetPasswordScreen"
             component={ResetPasswordScreen}
