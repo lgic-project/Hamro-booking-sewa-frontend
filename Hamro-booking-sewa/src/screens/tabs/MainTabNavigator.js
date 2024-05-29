@@ -1,21 +1,49 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import MenuScreen from './MenuScreen'; // Your drawer navigator
-import ListHotelsScreen from './ListHotelsScreen';
-import HomeScreen from './HomeScreen';
-import BookedHotelsScreen from './BookedHotelsScreen';
+import { FontAwesome, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import UserProfile from './MenuScreen/UserProfile/UserProfile'; 
+import Settings from './MenuScreen/Settings/Settings'; 
+import Logout from '../Logout/Logout'; 
+import MenuScreen from './MenuScreen/MenuScreen'; 
+import LoginScreen from '../Login/LoginScreen';
 
 const Tab = createBottomTabNavigator();
 
-const MainTabNavigator = () => {
-  return (
-    <Tab.Navigator>
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="ListHotel" component={ListHotelsScreen} />
-      <Tab.Screen name="BookedHotels" component={BookedHotelsScreen} />
-      <Tab.Screen name="Menu" component={MenuScreen} />
-    </Tab.Navigator>
-  );
-};
+const MainTabNavigator = () => (
+  <Tab.Navigator>
+    <Tab.Screen
+      name="Menu"
+      component={MenuScreen}
+      options={{
+        tabBarIcon: ({ color, size }) => <FontAwesome name="bars" size={30} color={color} />,
+      }}
+    />
+    <Tab.Screen
+      name="Profile"
+      component={UserProfile}
+      options={{
+        tabBarIcon: ({ color, size }) => <FontAwesome name="user" size={30} color={color} />,
+      }}
+    />
+    <Tab.Screen
+      name="Settings"
+      component={Settings}
+      options={{
+        tabBarIcon: ({ color, size }) => <Ionicons name="settings" size={26} color={color} />,
+      }}
+    />
+    <Tab.Screen
+      name="Logout"
+      component={Logout}
+      options={{
+        tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="logout" size={28} color={color} />,
+      }}
+    />
+    <Tab.Screen
+      name="LoginScreen"
+      component={LoginScreen}
+    />
+  </Tab.Navigator>
+);
 
 export default MainTabNavigator;

@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { Text } from 'react-native-paper';
-import Background from '../components/Background';
-import Logo from '../components/Logo';
-import Header from '../components/Header';
-import Button from '../components/Button';
-import TextInput from '../components/TextInput';
-import BackButton from '../components/BackButton';
-import { theme } from '../core/theme';
-import { emailValidator } from '../helpers/emailValidator';
-import { passwordValidator } from '../helpers/passwordValidator';
-import { firstNameValidator } from '../helpers/firstNameValidator';
-import { lastNameValidator } from '../helpers/lastNameValidator';
-import { phoneNumberValidator } from '../helpers/phoneNumberValidator';
+import Background from '../../components/Background';
+import Logo from '../../components/Logo';
+import Header from '../../components/Header';
+import Button from '../../components/Button';
+import TextInput from '../../components/TextInput';
+import BackButton from '../../components/BackButton';
+import { theme } from '../../core/theme';
+import { emailValidator } from '../../helpers/emailValidator';
+import { passwordValidator } from '../../helpers/passwordValidator';
+import { firstNameValidator } from '../../helpers/firstNameValidator';
+import { lastNameValidator } from '../../helpers/lastNameValidator';
+import { phoneNumberValidator } from '../../helpers/phoneNumberValidator';
 
 export default function RegisterScreen({ navigation }) {
   const [first_name, setFirstName] = useState({ value: '', error: '' });
@@ -23,7 +23,7 @@ export default function RegisterScreen({ navigation }) {
   const [csrfToken, setCsrfToken] = useState('');
 
   useEffect(() => {
-    fetch('http://10.0.2.2:8000/csrf-token', {
+    fetch('http://192.168.1.71:8000/csrf-token', {
       method: 'GET',
       credentials: 'include', // Include cookies if necessary
     })
@@ -75,7 +75,7 @@ export default function RegisterScreen({ navigation }) {
       phone_number: phone_number.value,
     };
 
-    fetch('http://10.0.2.2:8000/localusers/add', {
+    fetch('http://192.168.1.71:8000/localusers/add', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -91,6 +91,7 @@ export default function RegisterScreen({ navigation }) {
       })
       .then(json => {
         console.log('User registered successfully', json);
+        Alert.alert('User registered Successfully!');
         navigation.navigate('StartScreen');
       })
       .catch(error => {
