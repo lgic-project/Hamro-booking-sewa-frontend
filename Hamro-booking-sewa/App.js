@@ -12,6 +12,7 @@ import {
 } from './src/screens';
 import handleLogout from './src/screens/tabs/Logout';
 import MainTabNavigator from './src/screens/tabs/MainTabNavigator';
+import SplashScreen from './src/screens/splash/SplashScreen';
 
 const Stack = createStackNavigator();
 
@@ -20,7 +21,7 @@ export default function App() {
     <Provider theme={theme}>
       <NavigationContainer>
         <Stack.Navigator
-          initialRouteName="StartScreen"
+          initialRouteName="Splash"
           screenOptions={{
             headerShown: false,
           }}
@@ -35,6 +36,7 @@ export default function App() {
             component={ResetPasswordScreen}
           />
           <Stack.Screen name="Main" component={MainTabNavigator} />
+          <Stack.Screen name="Splash" component={SplashScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>
