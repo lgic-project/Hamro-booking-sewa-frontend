@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
 import { Card, Text } from 'react-native-paper';
+import Server from '../../../Server/Server';
 
 const ListHotelsScreen = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const apiUrl = "http://192.168.1.71:8000/json-owner";
-  const homeUrl = "http://10.0.2.2:8000/images/hotel/";
+  const apiUrl = Server.primaryUrl+"/json-owner";
+  const homeUrl = "http://192.168.1.71:8000/images/hotel/";
   const [searchQuery, setSearchQuery] = useState('');
 
   const fetchData = () => {
@@ -39,7 +40,7 @@ const ListHotelsScreen = () => {
           data={data}
           renderItem={({ item }) => (
             <Card style={styles.card}>
-              <Card.Cover style={styles.icon} source={{uri: 'http://192.168.1.71:8000/images/hotel/'+ item.photos}} onError={() => console.log('Error loading image')} />
+              <Card.Cover style={styles.icon} source={{uri: Server.primaryUrl +'/images/hotel/'+ item.photos}} onError={() => console.log('Error loading image')} />
               <Card.Title title={item.title} subtitle={item.location} />
               <Card.Content>
                 <Text style={{ fontSize: 15, color: 'red' }}>Contact: {item.phone_number}</Text>

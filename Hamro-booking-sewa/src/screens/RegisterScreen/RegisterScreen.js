@@ -13,6 +13,7 @@ import { passwordValidator } from '../../helpers/passwordValidator';
 import { firstNameValidator } from '../../helpers/firstNameValidator';
 import { lastNameValidator } from '../../helpers/lastNameValidator';
 import { phoneNumberValidator } from '../../helpers/phoneNumberValidator';
+import Server from '../../Server/Server';
 
 export default function RegisterScreen({ navigation }) {
   const [first_name, setFirstName] = useState({ value: '', error: '' });
@@ -23,7 +24,7 @@ export default function RegisterScreen({ navigation }) {
   const [csrfToken, setCsrfToken] = useState('');
 
   useEffect(() => {
-    fetch('http://192.168.1.71:8000/csrf-token', {
+    fetch(Server.primaryUrl+'/csrf-token', {
       method: 'GET',
       credentials: 'include', // Include cookies if necessary
     })
@@ -75,7 +76,7 @@ export default function RegisterScreen({ navigation }) {
       phone_number: phone_number.value,
     };
 
-    fetch('http://192.168.1.71:8000/localusers/add', {
+    fetch(Server.primaryUrl+'/localusers/add', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
