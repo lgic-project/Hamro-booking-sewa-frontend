@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { View, StyleSheet, FlatList, ActivityIndicator, TextInput, Modal, TouchableOpacity } from 'react-native';
 import { Card, Text, Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
+import Server from '../../../Server/Server';
 
 const HomeScreen = () => {
   const [data, setData] = useState([]);
@@ -10,8 +11,8 @@ const HomeScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
-  const apiUrl = "http://192.168.1.71:8000/json-room";
-  const homeUrl = "http://192.168.1.71:8000/images/hotel/";
+  const apiUrl = Server.primaryUrl+"/json-room";
+  const homeUrl = Server.primaryUrl+"/images/hotel/";
 
   const navigation = useNavigation();
 
