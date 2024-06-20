@@ -10,14 +10,14 @@ import BackButton from '../../components/BackButton';
 import { theme } from '../../core/theme';
 import { emailValidator } from '../../helpers/emailValidator';
 import { passwordValidator } from '../../helpers/passwordValidator';
-import { firstNameValidator } from '../../helpers/firstNameValidator';
-import { lastNameValidator } from '../../helpers/lastNameValidator';
+import { nameValidator } from '../../helpers/nameValidator';
+import { categoryNameValidator } from '../../helpers/categoryNameValidator';
 import { phoneNumberValidator } from '../../helpers/phoneNumberValidator';
 import Server from '../../Server/Server';
 
 export default function RegisterScreen({ navigation }) {
-  const [first_name, setFirstName] = useState({ value: '', error: '' });
-  const [last_name, setLastName] = useState({ value: '', error: '' });
+  const [name, setNameName] = useState({ value: '', error: '' });
+  const [category, setCategoryName] = useState({ value: '', error: '' });
   const [email, setEmail] = useState({ value: '', error: '' });
   const [password, setPassword] = useState({ value: '', error: '' });
   const [phone_number, setPhoneNumber] = useState({ value: '', error: '' });
@@ -54,14 +54,14 @@ export default function RegisterScreen({ navigation }) {
   }, []);
 
   const onSignUpPressed = () => {
-    const firstNameError = firstNameValidator(first_name.value);
-    const lastNameError = lastNameValidator(last_name.value);
+    const nameError = nameValidator(name.value);
+    const lastNameError = categoryNameValidator(category.value);
     const emailError = emailValidator(email.value);
     const passwordError = passwordValidator(password.value);
     const phoneNumberError = phoneNumberValidator(phone_number.value);
-    if (emailError || passwordError || firstNameError || lastNameError || phoneNumberError) {
-      setFirstName({ ...first_name, error: firstNameError });
-      setLastName({ ...last_name, error: lastNameError });
+    if (emailError || passwordError || nameError || lastNameError || phoneNumberError) {
+      setNameName({ ...name, error: nameError });
+      setCategoryName({ ...category, error: lastNameError });
       setEmail({ ...email, error: emailError });
       setPassword({ ...password, error: passwordError });
       setPhoneNumber({ ...phone_number, error: phoneNumberError });
@@ -69,14 +69,14 @@ export default function RegisterScreen({ navigation }) {
     }
 
     const formData = {
-      first_name: first_name.value,
-      last_name: last_name.value,
+      name: name.value,
+      category: category.value,
       email: email.value,
       password: password.value,
       phone_number: phone_number.value,
     };
 
-    fetch(Server.primaryUrl+'/localusers/add', {
+    fetch(Server.primaryUrl+'/registerUser/add', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -108,18 +108,18 @@ export default function RegisterScreen({ navigation }) {
       <TextInput
         label="First Name"
         returnKeyType="next"
-        value={first_name.value}
-        onChangeText={(text) => setFirstName({ value: text, error: '' })}
-        error={!!first_name.error}
-        errorText={first_name.error}
+        value={name.value}
+        onChangeText={(text) => setNameName({ value: text, error: '' })}
+        error={!!name.error}
+        errorText={name.error}
       />
       <TextInput
-        label="Last Name"
+        label="Category"
         returnKeyType="next"
-        value={last_name.value}
-        onChangeText={(text) => setLastName({ value: text, error: '' })}
-        error={!!last_name.error}
-        errorText={last_name.error}
+        value={category.value}
+        onChangeText={(text) => setCategoryName({ value: text, error: '' })}
+        error={!!category.error}
+        errorText={category.error}
       />
       <TextInput
         label="Email"

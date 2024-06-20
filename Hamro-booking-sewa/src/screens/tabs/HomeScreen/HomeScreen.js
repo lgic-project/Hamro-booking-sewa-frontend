@@ -11,7 +11,7 @@ const HomeScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
-  const apiUrl = Server.primaryUrl+"/json-room";
+  const apiUrl = Server.primaryUrl+"/hotel/json-room";
   const homeUrl = Server.primaryUrl+"/images/hotel/";
 
   const navigation = useNavigation();
