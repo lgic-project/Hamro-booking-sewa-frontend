@@ -8,6 +8,7 @@ const UserProfile = ({navigation}) => {
   const [userName, setUserName] = useState('John Doe');
   const [email, setEmail] = useState('john.doe@example.com');
   const [phoneNumber, setPhoneNumber] = useState('123-456-7890');
+  const [password, setPassword] = useState('*******');
 
   const handleSave = () => {
     // Save edited data to database or API
@@ -38,6 +39,16 @@ const UserProfile = ({navigation}) => {
           />
         ) : (
           <Text style={styles.text}>{email}</Text>
+        )}
+        <Text style={styles.label}>Password</Text>
+        {editMode ? (
+          <TextInput
+            style={styles.input}
+            value={password}
+            onChangeText={text => setPassword(text)}
+          />
+        ) : (
+          <Text style={styles.text}>{password}</Text>
         )}
         <Text style={styles.label}>Phone Number</Text>
         {editMode ? (

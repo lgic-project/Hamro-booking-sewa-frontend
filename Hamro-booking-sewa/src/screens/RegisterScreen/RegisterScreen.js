@@ -38,6 +38,7 @@ export default function RegisterScreen({ navigation }) {
       .then(text => {
         let data;
         try {
+          
           data = JSON.parse(text);
         } catch (error) {
           console.error('Error parsing JSON:', error);
@@ -74,7 +75,7 @@ export default function RegisterScreen({ navigation }) {
       phone_number: phone_number.value,
     };
 
-    fetch(Server.primaryUrl+'/registerUser/add', {
+    fetch(`${Server.primaryUrl}/registerUser/add`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

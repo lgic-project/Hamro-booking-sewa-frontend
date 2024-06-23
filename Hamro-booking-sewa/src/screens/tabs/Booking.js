@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, TextInput, Text, TouchableOpacity, Pressable, Modal } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, TextInput, Text, TouchableOpacity, Pressable, Modal, Alert } from 'react-native';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
+import Server from '../../Server/Server'; // Import server configuration
 
 const Booking = ({ route, navigation }) => {
   const { room } = route.params;
@@ -11,6 +12,29 @@ const Booking = ({ route, navigation }) => {
   const [people, setPeople] = useState('');
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
+  const [csrfToken, setCsrfToken] = useState('');
+
+  useEffect(() => {
+    fetch(Server.primaryUrl+'/csrf-token', {
+      method: 'GET',
+      credentials: 'include', // Include cookies if necessary
+    })
+      .then(response => response.text())
+      .then(text => {
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch (error) {
+          console.error('Error parsing JSON:', error);
+          throw new Error('Invalid JSON response');
+        }
+
+        setCsrfToken(data.csrfToken);
+      })
+      .catch(error => {
+        console.error('Error fetching CSRF token:', error);
+      });
+  }, []);
 
   const toggleDatePicker = () => {
     setShowDatePicker(!showDatePicker);
@@ -41,13 +65,43 @@ const Booking = ({ route, navigation }) => {
   };
 
   const handleBooking = () => {
-    // Format date and time
     const formattedDate = date.toISOString().split('T')[0]; // Format date to YYYY-MM-DD
     const formattedTime = arrivalTime.toTimeString().split(' ')[0].substring(0, 5); // Format time to HH:MM
 
-    console.log('Booking details:', { date: formattedDate, arrivalTime: formattedTime, people });
-    alert('Booking confirmed!');
-    navigation.goBack();
+    const bookingData = {
+      room: room.title,
+      date: formattedDate,
+      arrivalTime: formattedTime, // Correct field name
+      people,
+    };
+
+    console.log('Booking Data to be sent:', bookingData);
+
+    fetch(`${Server.primaryUrl}/booking/store`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': csrfToken,
+      },
+      body: JSON.stringify(bookingData),
+    })
+      .then(response => {
+        console.log('Response status:', response.status);
+        if (!response.ok) {
+          console.log('Response data:', JSON.stringify(bookingData));
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(json => {
+        console.log('Booking confirmed', json);
+        Alert.alert('Booking confirmed!');
+        navigation.goBack();
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        Alert.alert('Error confirming booking. Please try again.');
+      });
   };
 
   return (
@@ -57,9 +111,9 @@ const Booking = ({ route, navigation }) => {
         <TextInput
           style={styles.input}
           placeholder="Date (YYYY-MM-DD)"
-          value={date.toISOString().split('T')[0]} // Format date to YYYY-MM-DD
-          editable={false} // Make TextInput non-editable
-          pointerEvents="none" // Prevent the TextInput from capturing touch events
+          value={date.toISOString().split('T')[0]}
+          editable={false}
+          pointerEvents="none"
         />
       </Pressable>
       <Modal
@@ -91,9 +145,9 @@ const Booking = ({ route, navigation }) => {
         <TextInput
           style={styles.input}
           placeholder="Arrival Time (HH:MM)"
-          value={arrivalTime.toTimeString().split(' ')[0].substring(0, 5)} // Format time to HH:MM
-          editable={false} // Make TextInput non-editable
-          pointerEvents="none" // Prevent the TextInput from capturing touch events
+          value={arrivalTime.toTimeString().split(' ')[0].substring(0, 5)}
+          editable={false}
+          pointerEvents="none"
         />
       </Pressable>
       <Modal
