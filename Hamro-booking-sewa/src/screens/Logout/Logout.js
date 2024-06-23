@@ -11,7 +11,10 @@ const Logout = ({ visible }) => {
 
   const handleLogout = () => {
     // console.log('Logout Pending');
-    navigation.navigate('LoginScreen');
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Dashboard' }],
+    });
   };
 
   return (
