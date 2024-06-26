@@ -1,207 +1,99 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { View, StyleSheet, FlatList, ActivityIndicator, TextInput, Modal, Platform } from 'react-native';
-import { Card, Text, Button } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native'; // Import useNavigation hook
-import Server from '../../../Server/Server';
+import React, { useEffect, useState } from 'react';
+import { View, Text, FlatList, ImageBackground, TouchableOpacity, StyleSheet } from 'react-native';
 
 const HomeScreen = () => {
-  const navigation = useNavigation(); // Use the useNavigation hook to get navigation prop
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [modalVisible, setModalVisible] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [selectedImage, setSelectedImage] = useState(null); // To store selected image URL
-  const apiUrl = Server.primaryUrl + "/hotel/json-room";
-  const homeUrl = Server.primaryUrl + "/images/hotel/";
+  const [hotels, setHotels] = useState([]);
 
-  const fetchData = async () => {
+  useEffect(() => {
+    fetchHotels();
+  }, []);
+
+  const fetchHotels = async () => {
     try {
-      const response = await fetch(apiUrl);
-      const json = await response.json();
-      setData(json);
+      // Simulating fetching data from an API
+      const response = await fetch('https://jsonplaceholder.typicode.com/posts/?userId=1');
+      const data = await response.json();
+      setHotels(data); // Placeholder for demonstration
     } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
+      console.error('Error fetching hotels:', error);
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const onRefresh = () => {
-    setRefreshing(true);
-    fetchData();
-  };
-
-  const filteredData = data.filter(item =>
-    item.title.toLowerCase().includes(searchQuery.toLowerCase())
+  const renderItem = ({ item }) => (
+    <TouchableOpacity style={styles.card}>
+      <ImageBackground
+        source={{ uri: 'https://images.pexels.com/photos/2363808/pexels-photo-2363808.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2' }} // Placeholder image API
+        style={styles.imageBackground}
+        imageStyle={{ borderRadius: 10 }}
+      >
+        <Text style={styles.hotelName}>{item.title}</Text>
+      </ImageBackground>
+      <Text style={styles.description}>{item.body}</Text>
+      <TouchableOpacity style={styles.button} onPress={() => {}}>
+        <Text style={styles.buttonText}>View Details</Text>
+      </TouchableOpacity>
+    </TouchableOpacity>
   );
-
-  const renderItem = useCallback(({ item }) => (
-    <View style={styles.cardContainer}>
-      <Card style={styles.card}>
-        <Card.Content style={styles.cardContent}>
-          <Text style={styles.title}>{item.title}</Text>
-          <Text style={styles.subtitle}>Total Rooms: {item.total_rooms}</Text>
-          <Text style={styles.availableText}>Available: {item.is_available ? 'Yes' : 'No'}</Text>
-          <Button mode="contained" onPress={() => {
-            setSelectedItem(item);
-            setSelectedImage(homeUrl + 'room/' + item.room_thumbnail); // Set selected image URL
-            setModalVisible(true);
-          }}>
-            View Details
-          </Button>
-        </Card.Content>
-      </Card>
-    </View>
-  ), []);
 
   return (
     <View style={styles.container}>
-      <TextInput
-        style={styles.searchBar}
-        placeholder="Search rooms..."
-        value={searchQuery}
-        onChangeText={setSearchQuery}
+      <FlatList
+        data={hotels}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id.toString()}
       />
-      {loading ? (
-        <ActivityIndicator animating={true} color={'blue'} size={'large'} />
-      ) : (
-        <FlatList
-          data={filteredData}
-          renderItem={renderItem}
-          keyExtractor={(item, index) => index.toString()}
-          contentContainerStyle={styles.flatListContent}
-          refreshing={refreshing}
-          onRefresh={onRefresh}
-        />
-      )}
-      {selectedItem && (
-        <Modal
-          visible={modalVisible}
-          transparent={true}
-          animationType="slide"
-          onRequestClose={() => setModalVisible(false)}
-        >
-          <View style={styles.modalBackground}>
-            <View style={styles.modalContainer}>
-              <Card style={styles.modalCard}>
-                <Card.Content>
-                  <Card.Title title={selectedItem.title} subtitle={`Total Rooms: ${selectedItem.total_rooms}`} />
-                  {selectedImage && <Card.Cover style={styles.icon} source={{ uri: selectedImage }} />}
-                  <Text style={styles.priceText}>Price: {selectedItem.price}</Text>
-                  <Text style={styles.descriptionText}>{selectedItem.description}</Text>
-                </Card.Content>
-                <Card.Actions>
-                  <Button onPress={() => setModalVisible(false)}>Close</Button>
-                  <Button onPress={() => {
-                    setModalVisible(false);
-                    navigation.navigate('Booking', { room: selectedItem, room_thumbnail: selectedItem.room_thumbnail });
-                  }}>Book Now</Button>
-                </Card.Actions>
-              </Card>
-            </View>
-          </View>
-        </Modal>
-      )}
     </View>
   );
 };
-
-export default HomeScreen;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f0f0f0',
     padding: 10,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 5 },
-        shadowOpacity: 0.35,
-        shadowRadius: 15,
-      },
-      android: {
-        elevation: 5,
-      },
-    }),
-  },
-  searchBar: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 10,
-    paddingHorizontal: 8,
-    borderRadius: 5,
-  },
-  flatListContent: {
-    paddingBottom: 20,
-  },
-  icon: {
-    height: 150,
-    resizeMode: 'cover',
-  },
-  cardContainer: {
-    marginBottom: 15,
-    borderRadius: 10,
-    overflow: 'hidden',
-    backgroundColor: '#fff',
-    marginHorizontal: 10, // Adds space to the left and right
-    borderBottomWidth: 1, // Adds a line at the bottom
-    borderColor: '#ddd',
   },
   card: {
-    borderRadius: 10,
-  },
-  cardContent: {
-    padding: 10,
-    backgroundColor: '#f9f9f9',
-    borderTopWidth: 1,
+    marginBottom: 20,
+    borderWidth: 1,
     borderColor: '#ddd',
+    borderRadius: 10,
+    backgroundColor: '#fff',
+    elevation: 2, // Android shadow
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 2, // iOS shadow
   },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  subtitle: {
-    fontSize: 14,
-    marginBottom: 5,
-  },
-  modalBackground: {
-    flex: 1,
-    justifyContent: 'center',
+  imageBackground: {
+    height: 200,
+    justifyContent: 'flex-end',
     alignItems: 'center',
+    padding: 10,
+  },
+  hotelName: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: 'white',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContainer: {
-    width: '90%',
-    backgroundColor: 'white',
-    borderRadius: 10,
-    overflow: 'hidden',
-  },
-  modalCard: {
+    padding: 5,
     borderRadius: 10,
   },
-  priceText: {
-    fontSize: 15,
-    color: 'red',
-    marginTop: 5,
+  description: {
+    margin: 10,
+    fontSize: 16,
   },
-  availableText: {
-    fontSize: 15,
-    color: 'blue',
-    marginTop: 5,
+  button: {
+    backgroundColor: '#007bff',
+    borderRadius: 5,
+    padding: 10,
+    alignSelf: 'flex-end',
+    margin: 10,
   },
-  descriptionText: {
-    fontSize: 15,
-    color: '#333',
-    marginTop: 5,
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
+
+export default HomeScreen;

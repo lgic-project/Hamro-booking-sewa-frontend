@@ -5,6 +5,14 @@ import { Button, useTheme } from 'react-native-paper';
 const MenuScreen = ({ navigation }) => {
   const theme = useTheme();
 
+  const handleLogout = () => {
+    // Reset the navigation stack to StartScreen
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Splash' }],
+    });
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.contentContainer}>
@@ -37,7 +45,7 @@ const MenuScreen = ({ navigation }) => {
         </Button>
         <Button
           mode="contained"
-          onPress={() => navigation.navigate('Logout')}
+          onPress={handleLogout}
           style={styles.button}
           labelStyle={styles.buttonText}
           buttonColor="#008080" // Teal color

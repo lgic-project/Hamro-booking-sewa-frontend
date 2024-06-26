@@ -17,6 +17,7 @@ import Policies from '../TermsandPolicies/Policies';
 import HotelRooms from '../tabs/HotelRooms/HotelRooms';
 import HotelDetailsScreen from '../tabs/ListHotelsScreen/HotelDetails/HotelDetailsScreen';
 import RoomDetailsScreen from '../tabs/ListHotelsScreen/HotelDetails/RoomDetailsScreen';
+import StartScreen from '../StartScreen/StartScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -48,6 +49,7 @@ const MenuStack = () => (
     <Stack.Screen name="UserProfile" component={UserProfile} />
     <Stack.Screen name="Settings" component={Settings} />
     <Stack.Screen name="Policies" component={Policies} />
+    <Stack.Screen name="StartScreen" component={StartScreen} />
     {/* <Stack.Screen name="Logout" component={Logout} /> */}
   </Stack.Navigator>
 );

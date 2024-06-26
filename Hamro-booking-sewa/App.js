@@ -13,6 +13,7 @@ import {
 import handleLogout from './src/screens/Logout/Logout';
 import MainTabNavigator from './src/screens/tabs/MainTabNavigator';
 import SplashScreen from './src/screens/splash/SplashScreen';
+import MenuScreen from './src/screens/tabs/MenuScreen/MenuScreen';
 
 const Stack = createStackNavigator();
 
@@ -30,11 +31,11 @@ export default function App() {
           <Stack.Screen name="LoginScreen" component={LoginScreen} />
           <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
           <Stack.Screen name="Dashboard" component={Dashboard} />
+          <Stack.Screen name="Menu" component={MenuScreen} />
           <Stack.Screen
             name="ResetPasswordScreen"
             component={ResetPasswordScreen}
           />
-          <Stack.Screen name="Main" component={MainTabNavigator} />
           <Stack.Screen name="Splash" component={SplashScreen} />
         </Stack.Navigator>
       </NavigationContainer>
