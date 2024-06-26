@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, StyleSheet, FlatList, ActivityIndicator, Modal, Alert } from 'react-native';
-import { Card, Text, Button } from 'react-native-paper';
+import { Card, Text, Button, Dialog, Portal, Paragraph } from 'react-native-paper';
 import Server from '../../../Server/Server';
 
 const BookedHotelsScreen = () => {
@@ -9,8 +9,9 @@ const BookedHotelsScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
+  const [dialogVisible, setDialogVisible] = useState(false);
   const bookingUrl = Server.primaryUrl + "/booking-json";
-  const homeUrl = Server.primaryUrl + "/images/hotel/";
+  const roomUrl = Server.primaryUrl + "/images/hotel/room/"; // Change to the correct URL for room images
 
   const fetchData = async () => {
     try {
@@ -34,28 +35,35 @@ const BookedHotelsScreen = () => {
     fetchData();
   };
 
+  const handleCancelBooking = async () => {
+    try {
+      const cancelUrl = `${Server.primaryUrl}/cancel-booking/${selectedBooking.id}`; // Adjust URL as necessary
+      await fetch(cancelUrl, { method: 'GET' });
+      Alert.alert("Booking cancelled successfully");
+      fetchData(); // Refresh the data after cancellation
+    } catch (error) {
+      console.error(error);
+      Alert.alert("Failed to cancel the booking");
+    } finally {
+      setDialogVisible(false);
+    }
+  };
+
   const renderItem = useCallback(({ item }) => (
     <View style={styles.cardContainer}>
       <Card style={styles.card}>
-        <Card.Cover
-          style={styles.icon}
-          source={{ uri: homeUrl + item.hotel_photo }}
-          onError={() => console.log('Error loading image')}
-        />
         <Card.Content style={styles.cardContent}>
-          <View style={styles.textContainer}>
-            <Text style={styles.title}>{item.hotel_name}</Text>
-            <Text style={styles.subtitle}>Room: {item.room}</Text>
-            <Text style={styles.subtitle}>Date: {item.date}</Text>
-            <Text style={styles.subtitle}>Time: {item.time}</Text>
-            <Text style={styles.subtitle}>People: {item.people}</Text>
-            <Button mode="contained" onPress={() => {
-              setSelectedBooking(item);
-              setModalVisible(true);
-            }}>
-              View Details
-            </Button>
-          </View>
+          <Text style={styles.title}>{item.hotel_name}</Text>
+          <Text style={styles.subtitle}>Booking ID: {item.booking_id}</Text>
+          <Text style={styles.subtitle}>Number of people: {item.total_people}</Text>
+          <Text style={styles.subtitle}>Arrival Date: {item.arrival_date}</Text>
+          <Text style={styles.subtitle}>Arrival Time: {item.arrival_time}</Text>
+          <Button mode="contained" onPress={() => {
+            setSelectedBooking(item);
+            setModalVisible(true);
+          }}>
+            View Details
+          </Button>
         </Card.Content>
       </Card>
     </View>
@@ -79,33 +87,47 @@ const BookedHotelsScreen = () => {
         <Modal
           visible={modalVisible}
           transparent={true}
-          animationType="slide"
+          animationType="fade"
           onRequestClose={() => setModalVisible(false)}
         >
           <View style={styles.modalBackground}>
             <View style={styles.modalContainer}>
               <Card style={styles.modalCard}>
-                <Card.Cover
-                  style={styles.icon}
-                  source={{ uri: homeUrl + selectedBooking.hotel_photo }}
-                  onError={() => console.log('Error loading image')}
-                />
-                <Card.Title title={selectedBooking.hotel_name} subtitle={`Room: ${selectedBooking.room}`} />
                 <Card.Content>
-                  <Text style={styles.status}>Status: Pending</Text>
-                  <Text style={styles.subtitle}>Date: {selectedBooking.date}</Text>
-                  <Text style={styles.subtitle}>Time: {selectedBooking.time}</Text>
-                  <Text style={styles.subtitle}>People: {selectedBooking.people}</Text>
+                  <Card.Title title={selectedBooking.hotel_name} subtitle={`Room: ${selectedBooking.room}`} />
+                  {selectedBooking.room_thumbnail && <Card.Cover style={styles.icon} source={{ uri: roomUrl + selectedBooking.room_thumbnail }} />}
+                  <Text style={styles.subtitle}>Booking ID: {selectedBooking.booking_id}</Text>
+                  <Text style={styles.subtitle}>Number of people: {selectedBooking.total_people}</Text>
+                  <Text style={styles.subtitle}>Arrival Date: {selectedBooking.arrival_date}</Text>
+                  <Text style={styles.subtitle}>Arrival Time: {selectedBooking.arrival_time}</Text>
                 </Card.Content>
                 <Card.Actions>
                   <Button onPress={() => setModalVisible(false)}>Close</Button>
-                  <Button onPress={() => Alert.alert("Cancel booking feature not implemented yet")}>Cancel Booking</Button>
+                  <Button onPress={() => {
+                    setModalVisible(false);
+                    setDialogVisible(true);
+                  }}>Cancel Booking</Button>
                 </Card.Actions>
               </Card>
             </View>
           </View>
         </Modal>
       )}
+      <Portal>
+        <Dialog
+          visible={dialogVisible}
+          onDismiss={() => setDialogVisible(false)}
+        >
+          <Dialog.Title>Cancel Booking</Dialog.Title>
+          <Dialog.Content>
+            <Paragraph>Are you sure you want to cancel the booking?</Paragraph>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={() => setDialogVisible(false)}>No</Button>
+            <Button onPress={handleCancelBooking}>Yes</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
     </View>
   );
 };
@@ -120,10 +142,6 @@ const styles = StyleSheet.create({
   },
   flatListContent: {
     paddingBottom: 20,
-  },
-  icon: {
-    height: 150,
-    resizeMode: 'cover',
   },
   cardContainer: {
     marginBottom: 15,
@@ -144,9 +162,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9f9f9',
     borderTopWidth: 1,
     borderColor: '#ddd',
-  },
-  textContainer: {
-    alignItems: 'center',
   },
   title: {
     fontSize: 18,

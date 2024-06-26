@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 import BackButton from '../../../../components/BackButton';
 
-const UserProfile = ({navigation}) => {
+const UserProfile = ({ navigation }) => {
   const [editMode, setEditMode] = useState(false);
   const [userName, setUserName] = useState('John Doe');
   const [email, setEmail] = useState('john.doe@example.com');
@@ -20,53 +20,62 @@ const UserProfile = ({navigation}) => {
       <BackButton goBack={navigation.goBack} />
       <View style={styles.profileContainer}>
         <Image source={require('../../../../assets/profile.png')} style={styles.profilePic} />
-        <Text style={styles.label}>User Name</Text>
-        {editMode ? (
-          <TextInput
-            style={styles.input}
-            value={userName}
-            onChangeText={text => setUserName(text)}
-          />
-        ) : (
-          <Text style={styles.text}>{userName}</Text>
-        )}
-        <Text style={styles.label}>Email Address</Text>
-        {editMode ? (
-          <TextInput
-            style={styles.input}
-            value={email}
-            onChangeText={text => setEmail(text)}
-          />
-        ) : (
-          <Text style={styles.text}>{email}</Text>
-        )}
-        <Text style={styles.label}>Password</Text>
-        {editMode ? (
-          <TextInput
-            style={styles.input}
-            value={password}
-            onChangeText={text => setPassword(text)}
-          />
-        ) : (
-          <Text style={styles.text}>{password}</Text>
-        )}
-        <Text style={styles.label}>Phone Number</Text>
-        {editMode ? (
-          <TextInput
-            style={styles.input}
-            value={phoneNumber}
-            onChangeText={text => setPhoneNumber(text)}
-          />
-        ) : (
-          <Text style={styles.text}>{phoneNumber}</Text>
-        )}
-        {editMode ? (
-          <Button mode="contained" onPress={handleSave} style={styles.button}>Save</Button>
-        ) : (
-          <TouchableOpacity onPress={() => setEditMode(true)} style={styles.button}>
-            <Text style={styles.buttonText}>Edit</Text>
-          </TouchableOpacity>
-        )}
+        <View style={styles.infoContainer}>
+          <Text style={styles.label}>User Name</Text>
+          {editMode ? (
+            <TextInput
+              style={styles.input}
+              value={userName}
+              onChangeText={text => setUserName(text)}
+              mode="outlined"
+            />
+          ) : (
+            <Text style={styles.text}>{userName}</Text>
+          )}
+          <Text style={styles.label}>Email Address</Text>
+          {editMode ? (
+            <TextInput
+              style={styles.input}
+              value={email}
+              onChangeText={text => setEmail(text)}
+              mode="outlined"
+            />
+          ) : (
+            <Text style={styles.text}>{email}</Text>
+          )}
+          <Text style={styles.label}>Password</Text>
+          {editMode ? (
+            <TextInput
+              style={styles.input}
+              value={password}
+              onChangeText={text => setPassword(text)}
+              mode="outlined"
+              secureTextEntry
+            />
+          ) : (
+            <Text style={styles.text}>{password}</Text>
+          )}
+          <Text style={styles.label}>Phone Number</Text>
+          {editMode ? (
+            <TextInput
+              style={styles.input}
+              value={phoneNumber}
+              onChangeText={text => setPhoneNumber(text)}
+              mode="outlined"
+            />
+          ) : (
+            <Text style={styles.text}>{phoneNumber}</Text>
+          )}
+          {editMode ? (
+            <Button mode="contained" onPress={handleSave} style={styles.saveButton}>
+              Save
+            </Button>
+          ) : (
+            <Button mode="contained" onPress={() => setEditMode(true)} style={styles.editButton}>
+              Edit
+            </Button>
+          )}
+        </View>
       </View>
     </View>
   );
@@ -75,51 +84,60 @@ const UserProfile = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#f9f9f9',
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 20,
   },
   profileContainer: {
-    // flex: 1,
-    width: '95%',
-    backgroundColor: '#fff',
+    width: '100%',
+    backgroundColor: '#ffffff',
     padding: 20,
-    borderRadius: 10,
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
     elevation: 5,
     alignItems: 'center',
-    justifyContent: 'center',
   },
   profilePic: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 120,
+    height: 120,
+    borderRadius: 60,
     marginBottom: 20,
+    borderWidth: 2,
+    borderColor: '#007bff',
+  },
+  infoContainer: {
+    width: '100%',
+    alignItems: 'center',
   },
   label: {
     fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 5,
+    fontWeight: '600',
+    marginTop: 10,
+    color: '#333',
   },
   text: {
     fontSize: 16,
     marginBottom: 10,
-    textAlign: 'center',
+    color: '#666',
   },
   input: {
     width: '100%',
     marginBottom: 10,
   },
-  button: {
+  editButton: {
     backgroundColor: '#007bff',
-    borderRadius: 5,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    marginTop: 10,
+    marginTop: 20,
   },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    textAlign: 'center',
+  saveButton: {
+    backgroundColor: '#28a745',
+    marginTop: 20,
   },
 });
 

@@ -1,20 +1,20 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, StyleSheet, FlatList, ActivityIndicator, TextInput, Modal, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, FlatList, ActivityIndicator, TextInput, Modal, Platform } from 'react-native';
 import { Card, Text, Button } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native'; // Import useNavigation hook
 import Server from '../../../Server/Server';
 
 const HomeScreen = () => {
+  const navigation = useNavigation(); // Use the useNavigation hook to get navigation prop
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
-  const apiUrl = Server.primaryUrl+"/hotel/json-room";
-  const homeUrl = Server.primaryUrl+"/images/hotel/";
-
-  const navigation = useNavigation();
+  const [selectedImage, setSelectedImage] = useState(null); // To store selected image URL
+  const apiUrl = Server.primaryUrl + "/hotel/json-room";
+  const homeUrl = Server.primaryUrl + "/images/hotel/";
 
   const fetchData = async () => {
     try {
@@ -45,22 +45,17 @@ const HomeScreen = () => {
   const renderItem = useCallback(({ item }) => (
     <View style={styles.cardContainer}>
       <Card style={styles.card}>
-        <Card.Cover
-          style={styles.icon}
-          source={{ uri: homeUrl + 'room/' + item.room_thumbnail }}
-          onError={() => console.log('Error loading image')}
-        />
         <Card.Content style={styles.cardContent}>
-          <View style={styles.textContainer}>
-            <Text style={styles.title}>{item.title}</Text>
-            <Text style={styles.subtitle}>Total Rooms: {item.total_rooms}</Text>
-            <Button mode="contained" onPress={() => {
-              setSelectedItem(item);
-              setModalVisible(true);
-            }}>
-              View Details
-            </Button>
-          </View>
+          <Text style={styles.title}>{item.title}</Text>
+          <Text style={styles.subtitle}>Total Rooms: {item.total_rooms}</Text>
+          <Text style={styles.availableText}>Available: {item.is_available ? 'Yes' : 'No'}</Text>
+          <Button mode="contained" onPress={() => {
+            setSelectedItem(item);
+            setSelectedImage(homeUrl + 'room/' + item.room_thumbnail); // Set selected image URL
+            setModalVisible(true);
+          }}>
+            View Details
+          </Button>
         </Card.Content>
       </Card>
     </View>
@@ -96,22 +91,17 @@ const HomeScreen = () => {
           <View style={styles.modalBackground}>
             <View style={styles.modalContainer}>
               <Card style={styles.modalCard}>
-                <Card.Cover
-                  style={styles.icon}
-                  source={{ uri: homeUrl + 'room/' + selectedItem.room_thumbnail }}
-                  onError={() => console.log('Error loading image')}
-                />
-                <Card.Title title={selectedItem.title} subtitle={`Total Rooms: ${selectedItem.total_rooms}`} />
                 <Card.Content>
+                  <Card.Title title={selectedItem.title} subtitle={`Total Rooms: ${selectedItem.total_rooms}`} />
+                  {selectedImage && <Card.Cover style={styles.icon} source={{ uri: selectedImage }} />}
                   <Text style={styles.priceText}>Price: {selectedItem.price}</Text>
-                  <Text style={styles.availableText}>Available: {selectedItem.is_available ? 'Yes' : 'No'}</Text>
                   <Text style={styles.descriptionText}>{selectedItem.description}</Text>
                 </Card.Content>
                 <Card.Actions>
                   <Button onPress={() => setModalVisible(false)}>Close</Button>
                   <Button onPress={() => {
                     setModalVisible(false);
-                    navigation.navigate('Booking', { room: selectedItem });
+                    navigation.navigate('Booking', { room: selectedItem, room_thumbnail: selectedItem.room_thumbnail });
                   }}>Book Now</Button>
                 </Card.Actions>
               </Card>
@@ -130,6 +120,17 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f0f0f0',
     padding: 10,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 5 },
+        shadowOpacity: 0.35,
+        shadowRadius: 15,
+      },
+      android: {
+        elevation: 5,
+      },
+    }),
   },
   searchBar: {
     height: 40,
@@ -150,12 +151,10 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     borderRadius: 10,
     overflow: 'hidden',
-    elevation: 3, // Adds a subtle shadow on Android
-    shadowColor: '#000', // Adds a subtle shadow on iOS
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
     backgroundColor: '#fff',
+    marginHorizontal: 10, // Adds space to the left and right
+    borderBottomWidth: 1, // Adds a line at the bottom
+    borderColor: '#ddd',
   },
   card: {
     borderRadius: 10,
@@ -166,9 +165,6 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderColor: '#ddd',
   },
-  textContainer: {
-    alignItems: 'center',
-  },
   title: {
     fontSize: 18,
     fontWeight: 'bold',
@@ -176,7 +172,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 14,
-    marginBottom: 10,
+    marginBottom: 5,
   },
   modalBackground: {
     flex: 1,

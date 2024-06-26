@@ -8,11 +8,15 @@ import BookedHotelsScreen from '../tabs/BookedHotelScreen/BookedHotelsScreen';
 import MenuScreen from '../tabs/MenuScreen/MenuScreen';
 import UserProfile from '../tabs/MenuScreen/UserProfile/UserProfile';
 import Settings from '../tabs/MenuScreen/Settings/Settings'; 
-// import Logout from './Logout/Logout';
 import Logout from '../Logout/Logout';
 import { AntDesign, Entypo, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { StyleSheet } from 'react-native';
 import Booking from '../tabs/Booking';
+import Policies from '../TermsandPolicies/Policies';
+import HotelRooms from '../tabs/HotelRooms/HotelRooms';
+import HotelDetailsScreen from '../tabs/ListHotelsScreen/HotelDetails/HotelDetailsScreen';
+import RoomDetailsScreen from '../tabs/ListHotelsScreen/HotelDetails/RoomDetailsScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -20,13 +24,15 @@ const Stack = createStackNavigator();
 const HomeStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false , cardStyle: { flex: 1 },}} >
     <Stack.Screen name="HomeScreen" component={HomeScreen} />
-    <Stack.Screen name="Booking" component={Booking} />
   </Stack.Navigator>
 );
 
 const ListHotelsStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false, cardStyle: { flex: 1 }, }}>
     <Stack.Screen name="ListHotels" component={ListHotelsScreen} />
+    <Stack.Screen name="HotelDetails" component={HotelDetailsScreen} />
+    <Stack.Screen name="RoomDetails" component={RoomDetailsScreen} />
+    <Stack.Screen name="Booking" component={Booking} />
   </Stack.Navigator>
 );
 
@@ -41,7 +47,8 @@ const MenuStack = () => (
     <Stack.Screen name="MenuScreen" component={MenuScreen} />
     <Stack.Screen name="UserProfile" component={UserProfile} />
     <Stack.Screen name="Settings" component={Settings} />
-    <Stack.Screen name="Logout" component={Logout} />
+    <Stack.Screen name="Policies" component={Policies} />
+    {/* <Stack.Screen name="Logout" component={Logout} /> */}
   </Stack.Navigator>
 );
 
@@ -54,10 +61,10 @@ const Dashboard = () => {
           screenOptions={{
             headerShown:false,
             tabBarActiveTintColor: 'black',
-            tabBarInactiveTintColor: 'gray',
+            tabBarInactiveTintColor: 'darkgrey',
             tabBarLabelStyle: { fontSize: 12, fontWeight: 'bold' },
             tabBarItemStyle: { paddingTop: 5 },
-            tabBarStyle: [{ display: 'flex' }, null]
+            tabBarStyle: [styles.tabBarStyle, { display: 'flex' }]
           }}
         >
           <Tab.Screen 
@@ -66,7 +73,7 @@ const Dashboard = () => {
             options={{
               headerShown:false,
               tabBarIcon: ({ color, size }) => (
-                <AntDesign name="home" size={25} color={color} />
+                <AntDesign name="home" size={25} color="white" />
               ),
             }} 
           />
@@ -76,7 +83,7 @@ const Dashboard = () => {
             options={{
               headerShown:false,
               tabBarIcon: ({ color, size }) => (
-                <Entypo name="list" size={25} color={color} />
+                <Entypo name="list" size={25} color="white" />
               ),
             }} 
           />
@@ -86,7 +93,7 @@ const Dashboard = () => {
             options={{
               headerShown:false,
               tabBarIcon: ({ color, size }) => (
-                <FontAwesome5 name="hotel" size={25} color={color} />
+                <FontAwesome5 name="hotel" size={25} color="white" />
               ),
             }} 
           />
@@ -96,7 +103,7 @@ const Dashboard = () => {
             options={{
               headerShown:false,
               tabBarIcon: ({ color, size }) => (
-                <MaterialCommunityIcons name="menu" size={25} color={color} />
+                <MaterialCommunityIcons name="menu" size={25} color="white" />
               ),
             }} 
           />
@@ -105,5 +112,29 @@ const Dashboard = () => {
     </NavigationContainer>
   );
 };
+
+const styles = StyleSheet.create({
+  tabBarStyle: {
+    position: "absolute",
+    bottom: 0,
+    left: 30,
+    right: 30,
+    elevation: 0,
+    backgroundColor: "#3134a4",
+    borderRadius: 15,
+    height: 70,
+    shadowOffset: {
+        width: 0,
+        height: 3,
+        },
+        shadowColor: 'black',
+        shadowOpacity: 1,
+        shadowRadius: 5.84,
+        elevation: 35,
+  },
+  tabBarIconStyle:{
+    marginBottom:15,
+  }
+});
 
 export default Dashboard;

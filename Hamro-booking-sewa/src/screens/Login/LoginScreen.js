@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   TouchableOpacity,
   StyleSheet,
@@ -6,6 +6,7 @@ import {
   Image,
   KeyboardAvoidingView,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
 import { Text, TextInput as PaperTextInput } from 'react-native-paper';
 import Header from '../../components/Header';
@@ -15,13 +16,41 @@ import { theme } from '../../core/theme';
 import { emailValidator } from '../../helpers/emailValidator';
 import { passwordValidator } from '../../helpers/passwordValidator';
 import { Feather } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Server from '../../Server/Server';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState({ value: '', error: '' });
   const [password, setPassword] = useState({ value: '', error: '' });
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [csrfToken, setCsrfToken] = useState('');
+  const apiUrl = Server.primaryUrl;
 
-  const onLoginPressed = () => {
+  useEffect(() => {
+    fetch(`${apiUrl}/csrf-token`, {
+      method: 'GET',
+      credentials: 'include', // Include cookies if necessary
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data && data.csrfToken) {
+          setCsrfToken(data.csrfToken);
+        } else {
+          throw new Error('CSRF token not found in response');
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching CSRF token:', error);
+      });
+  }, []);
+
+  const onLoginPressed = async () => {
     const emailError = emailValidator(email.value);
     const passwordError = passwordValidator(password.value);
     if (emailError || passwordError) {
@@ -29,10 +58,52 @@ export default function LoginScreen({ navigation }) {
       setPassword({ ...password, error: passwordError });
       return;
     }
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'Dashboard' }],
-    });
+
+    setLoading(true);
+
+    const userData = {
+      email: email.value,
+      password: password.value,
+    };
+
+    try {
+      const response = await fetch(`${apiUrl}/login-mob`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrfToken,
+        },
+        body: JSON.stringify(userData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Login failed');
+      }
+
+      const data = await response.json();
+
+      setLoading(false);
+
+      // Check if access_token exists
+      if (!data.access_token) {
+        throw new Error('Access token not found in response');
+      }
+
+      // Store the token securely using AsyncStorage
+      await AsyncStorage.setItem('token', data.access_token);
+
+      // Navigate to the Dashboard screen upon successful login
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Dashboard' }],
+      });
+    } catch (error) {
+      setLoading(false);
+      console.error('Login error:', error);
+      // Handle login error, e.g., show error message
+      setPassword({ ...password, error: 'Invalid email or password' });
+    }
   };
 
   return (
@@ -62,7 +133,7 @@ export default function LoginScreen({ navigation }) {
           theme={{ colors: { primary: theme.colors.primary } }}
         />
       </View>
-      
+
       {/* Password field */}
       <View style={styles.inputContainer}>
         <PaperTextInput
@@ -81,27 +152,31 @@ export default function LoginScreen({ navigation }) {
           color="black"
           onPress={() => setShowPassword(!showPassword)}
           style={styles.eyeIcon}
-        /> 
+        />
       </View>
-      
+
       <View style={styles.forgotPassword}>
         <TouchableOpacity onPress={() => navigation.navigate('ResetPasswordScreen')}>
           <Text style={styles.forgot}>Forgot your password ?</Text>
         </TouchableOpacity>
       </View>
-      
+
       {/* Displaying error message */}
       {email.error && <Text style={styles.error}>{email.error}</Text>}
       {password.error && <Text style={styles.error}>{password.error}</Text>}
-      
-      <Button mode="outlined" onPress={onLoginPressed} style={{color:"#CBC3E3"}}>
-        Log in
+
+      <Button mode="outlined" onPress={onLoginPressed} style={{ color: "#CBC3E3" }}>
+        {loading ? (
+          <ActivityIndicator animating={true} color={theme.colors.primary} />
+        ) : (
+          'Log in'
+        )}
       </Button>
-      
+
       <View style={styles.row}>
-        <Text>Don't have an account yet ?</Text> 
+        <Text>Don't have an account yet ?</Text>
       </View>
-      
+
       <View style={styles.row}>
         <TouchableOpacity onPress={() => navigation.replace('RegisterScreen')}>
           <Text style={styles.link}>Create Now!</Text>

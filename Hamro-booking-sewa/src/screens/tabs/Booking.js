@@ -15,7 +15,7 @@ const Booking = ({ route, navigation }) => {
   const [csrfToken, setCsrfToken] = useState('');
 
   useEffect(() => {
-    fetch(Server.primaryUrl+'/csrf-token', {
+    fetch(Server.primaryUrl + '/csrf-token', {
       method: 'GET',
       credentials: 'include', // Include cookies if necessary
     })
@@ -69,10 +69,13 @@ const Booking = ({ route, navigation }) => {
     const formattedTime = arrivalTime.toTimeString().split(' ')[0].substring(0, 5); // Format time to HH:MM
 
     const bookingData = {
-      room: room.title,
-      date: formattedDate,
-      arrivalTime: formattedTime, // Correct field name
-      people,
+      hotel_user_id: '2',
+      room_id: '1',
+      end_user_id:'3',
+      total_people: people,
+      booking_id: 'ABCD',
+      arrival_date: formattedDate,
+      arrival_time: formattedTime,
     };
 
     console.log('Booking Data to be sent:', bookingData);
@@ -104,6 +107,10 @@ const Booking = ({ route, navigation }) => {
       });
   };
 
+  const currentDate = new Date(); // Get the current date
+  const oneYearFromNow = new Date();
+  oneYearFromNow.setFullYear(currentDate.getFullYear() + 1); // Set the date one year in the future
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Book Room: {room.title}</Text>
@@ -129,6 +136,8 @@ const Booking = ({ route, navigation }) => {
               display="spinner"
               value={tempDate}
               onChange={onDateChange}
+              minimumDate={currentDate} // Restrict past dates
+              maximumDate={oneYearFromNow} // Restrict to one year from now
             />
             <View style={styles.modalButtons}>
               <TouchableOpacity onPress={toggleDatePicker} style={styles.button}>
@@ -199,9 +208,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
+  fontWeight: 'bold',
+  marginBottom: 20,
+  textAlign: 'center',
+  backgroundColor: '#949194', // Adding background color
+  color: '#fff', // Text color to contrast with background
+  paddingVertical: 10, // Vertical padding for better spacing
   },
   input: {
     height: 40,
@@ -212,7 +224,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   button: {
-    backgroundColor: '#1E90FF',
+    backgroundColor: 'red',
     paddingVertical: 10,
     paddingHorizontal: 10,
     borderRadius: 5,

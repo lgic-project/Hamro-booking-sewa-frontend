@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, StyleSheet, FlatList, ActivityIndicator, TextInput, Modal, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, FlatList, ActivityIndicator, TextInput } from 'react-native';
 import { Card, Text, Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import Server from '../../../Server/Server';
@@ -9,8 +9,6 @@ const ListHotelsScreen = () => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [modalVisible, setModalVisible] = useState(false);
-  const [selectedHotel, setSelectedHotel] = useState(null);
   const apiUrl = Server.primaryUrl + "/json-owner";
   const homeUrl = Server.primaryUrl + "/images/hotel/";
 
@@ -54,8 +52,7 @@ const ListHotelsScreen = () => {
           <View style={styles.textContainer}>
             <Text style={styles.title}>{item.title}</Text>
             <Button mode="contained" onPress={() => {
-              setSelectedHotel(item);
-              setModalVisible(true);
+              navigation.navigate('HotelDetails', { hotel: item });
             }}>
               View Details
             </Button>
@@ -84,38 +81,6 @@ const ListHotelsScreen = () => {
           refreshing={refreshing}
           onRefresh={onRefresh}
         />
-      )}
-      {selectedHotel && (
-        <Modal
-          visible={modalVisible}
-          transparent={true}
-          animationType="slide"
-          onRequestClose={() => setModalVisible(false)}
-        >
-          <View style={styles.modalBackground}>
-            <View style={styles.modalContainer}>
-              <Card style={styles.modalCard}>
-                <Card.Cover
-                  style={styles.icon}
-                  source={{ uri: homeUrl + selectedHotel.photos }}
-                  onError={() => console.log('Error loading image')}
-                />
-                <Card.Title title={selectedHotel.title} subtitle={selectedHotel.location} />
-                <Card.Content>
-                  <Text style={styles.contactText}>Contact: {selectedHotel.phone_number}</Text>
-                  <Text style={styles.emailText}>Email: {selectedHotel.email}</Text>
-                </Card.Content>
-                <Card.Actions>
-                  <Button onPress={() => setModalVisible(false)}>Close</Button>
-                  <Button onPress={() => {
-                    setModalVisible(false);
-                    navigation.navigate('RoomsScreen', { hotelId: selectedHotel.id });
-                  }}>View Rooms</Button>
-                </Card.Actions>
-              </Card>
-            </View>
-          </View>
-        </Modal>
       )}
     </View>
   );
@@ -148,8 +113,8 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     borderRadius: 10,
     overflow: 'hidden',
-    elevation: 3, // Adds a subtle shadow on Android
-    shadowColor: '#000', // Adds a subtle shadow on iOS
+    elevation: 3,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 5,
@@ -171,30 +136,5 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 5,
-  },
-  modalBackground: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContainer: {
-    width: '90%',
-    backgroundColor: 'white',
-    borderRadius: 10,
-    overflow: 'hidden',
-  },
-  modalCard: {
-    borderRadius: 10,
-  },
-  contactText: {
-    fontSize: 15,
-    color: 'red',
-    marginTop: 5,
-  },
-  emailText: {
-    fontSize: 15,
-    color: 'blue',
-    marginTop: 5,
   },
 });

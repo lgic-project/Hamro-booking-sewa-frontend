@@ -6,6 +6,7 @@ import Settings from './MenuScreen/Settings/Settings';
 import Logout from '../Logout/Logout'; 
 import MenuScreen from './MenuScreen/MenuScreen'; 
 import LoginScreen from '../Login/LoginScreen';
+import Policies from '../TermsandPolicies/Policies';
 
 const Tab = createBottomTabNavigator();
 
@@ -33,6 +34,13 @@ const MainTabNavigator = () => (
       }}
     />
     <Tab.Screen
+      name="Policies"
+      component={Policies} // Add the Policies screen
+      options={{
+        tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="file-document" size={28} color={color} />,
+      }}
+    />
+    <Tab.Screen
       name="Logout"
       component={Logout}
       options={{
@@ -42,6 +50,7 @@ const MainTabNavigator = () => (
     <Tab.Screen
       name="LoginScreen"
       component={LoginScreen}
+      options={{ tabBarButton: () => null }} // Hide the tab for LoginScreen
     />
   </Tab.Navigator>
 );
