@@ -9,7 +9,7 @@ const MenuScreen = ({ navigation }) => {
     // Reset the navigation stack to StartScreen
     navigation.reset({
       index: 0,
-      routes: [{ name: 'Splash' }],
+      routes: [{ name: 'StartScreen' }],
     });
   };
 

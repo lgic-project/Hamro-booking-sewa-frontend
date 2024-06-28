@@ -10,8 +10,6 @@ import {
   ResetPasswordScreen,
   Dashboard,
 } from './src/screens';
-import handleLogout from './src/screens/Logout/Logout';
-import MainTabNavigator from './src/screens/tabs/MainTabNavigator';
 import SplashScreen from './src/screens/splash/SplashScreen';
 import MenuScreen from './src/screens/tabs/MenuScreen/MenuScreen';
 

@@ -36,8 +36,7 @@ const HotelDetailsScreen = ({ route }) => {
                     <Image source={{ uri: roomImageUrl + room.room_thumbnail }} style={styles.roomImage} />
                     <View style={styles.roomDetails}>
                       <Text style={styles.roomTitle}>{room.title}</Text>
-                      <Text style={styles.text}>{room.description}</Text>
-                      <Text style={styles.text}>Price: {room.price}</Text>
+                      <Text style={styles.priceText}>Price: {room.price}</Text>
                       <Text style={styles.text}>Availability: {room.is_available}</Text>
                     </View>
                   </View>
@@ -98,6 +97,11 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     marginBottom: 10,
+  },
+  priceText: {
+    fontSize: 16,
+    marginBottom: 10,
+    fontWeight: '600',
   },
   roomCard: {
     borderRadius: 10,

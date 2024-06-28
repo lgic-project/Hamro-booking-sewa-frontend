@@ -18,6 +18,15 @@ const RoomDetailsScreen = ({ route }) => {
         <Image source={{ uri: roomImageUrl + room.room_thumbnail }} style={styles.headerImage} />
         <View style={styles.overlay}>
           <Text style={styles.headerTitle}>{room.title}</Text>
+          <View style={styles.bookButtonContainer}>
+            <Button
+              mode="contained"
+              style={styles.bookButton}
+              onPress={() => navigation.navigate('Booking', { room })}
+            >
+              Book Now
+            </Button>
+          </View>
         </View>
       </View>
       <View style={styles.contentContainer}>
@@ -26,13 +35,6 @@ const RoomDetailsScreen = ({ route }) => {
             <Text style={styles.description}>{room.description}</Text>
             <Text style={styles.price}>Price: {room.price}</Text>
             <Text style={[styles.availability, { color: availabilityColor }]}>Availability: {room.is_available}</Text>
-            <Button
-              mode="contained"
-              style={styles.button}
-              onPress={() => navigation.navigate('Booking', { room })}
-            >
-              Book Now
-            </Button>
             <Button
               mode="outlined"
               style={styles.button}
@@ -73,6 +75,14 @@ const styles = StyleSheet.create({
     fontSize: 28,
     color: '#fff',
     fontWeight: 'bold',
+  },
+  bookButtonContainer: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+  },
+  bookButton: {
+    marginTop: 0,
   },
   contentContainer: {
     padding: 10,

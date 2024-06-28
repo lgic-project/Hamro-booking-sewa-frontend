@@ -71,6 +71,9 @@ const BookedHotelsScreen = () => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>My Bookings</Text>
+      </View>
       {loading ? (
         <ActivityIndicator animating={true} color={'blue'} size={'large'} />
       ) : (
@@ -139,6 +142,19 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f0f0f0',
     padding: 10,
+  },
+  header: {
+    width: '100%',
+    padding: 10,
+    backgroundColor: '#cacccf',
+    alignItems: 'center',
+    marginBottom: 10,
+    borderRadius: 8,
+  },
+  headerTitle: {
+    fontSize: 24,
+    color: 'black',
+    fontWeight: 'bold',
   },
   flatListContent: {
     paddingBottom: 20,

@@ -1,18 +1,52 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import { TextInput, Button } from 'react-native-paper';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Image, Alert } from 'react-native';
+import { Button } from 'react-native-paper';
 import BackButton from '../../../../components/BackButton';
+import { useNavigation } from '@react-navigation/native';
+import Server from '../../../../Server/Server';
 
 const UserProfile = ({ navigation }) => {
-  const [editMode, setEditMode] = useState(false);
-  const [userName, setUserName] = useState('John Doe');
-  const [email, setEmail] = useState('john.doe@example.com');
-  const [phoneNumber, setPhoneNumber] = useState('123-456-7890');
-  const [password, setPassword] = useState('*******');
+  const [userName, setUserName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [category, setCategory] = useState('');
+  const [userID, setUserID] = useState('');
+  const apiUrl = Server.primaryUrl;
 
-  const handleSave = () => {
-    // Save edited data to database or API
-    setEditMode(false);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`${apiUrl}/userData/json`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch user data');
+        }
+        const data = await response.json();
+        const user = data.find(user => user.id === 3); // Find the user with ID 3
+        if (user) {
+          setUserName(user.name);
+          setEmail(user.email);
+          setPhoneNumber(user.phone_number);
+          setCategory(user.category);
+          setUserID(user.id);
+          console.log('user id is :' ,user.id);
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const { navigate } = useNavigation();
+
+  const handleEdit = () => {
+    navigate('ProfileEdit', {
+      userName,
+      email,
+      phoneNumber,
+      userID: 3,
+    });
   };
 
   return (
@@ -20,61 +54,17 @@ const UserProfile = ({ navigation }) => {
       <BackButton goBack={navigation.goBack} />
       <View style={styles.profileContainer}>
         <Image source={require('../../../../assets/profile.png')} style={styles.profilePic} />
+        <Text style={styles.category}>Account Type: {category}</Text>
         <View style={styles.infoContainer}>
           <Text style={styles.label}>User Name</Text>
-          {editMode ? (
-            <TextInput
-              style={styles.input}
-              value={userName}
-              onChangeText={text => setUserName(text)}
-              mode="outlined"
-            />
-          ) : (
-            <Text style={styles.text}>{userName}</Text>
-          )}
+          <Text style={styles.text}>{userName}</Text>
           <Text style={styles.label}>Email Address</Text>
-          {editMode ? (
-            <TextInput
-              style={styles.input}
-              value={email}
-              onChangeText={text => setEmail(text)}
-              mode="outlined"
-            />
-          ) : (
-            <Text style={styles.text}>{email}</Text>
-          )}
-          <Text style={styles.label}>Password</Text>
-          {editMode ? (
-            <TextInput
-              style={styles.input}
-              value={password}
-              onChangeText={text => setPassword(text)}
-              mode="outlined"
-              secureTextEntry
-            />
-          ) : (
-            <Text style={styles.text}>{password}</Text>
-          )}
+          <Text style={styles.text}>{email}</Text>
           <Text style={styles.label}>Phone Number</Text>
-          {editMode ? (
-            <TextInput
-              style={styles.input}
-              value={phoneNumber}
-              onChangeText={text => setPhoneNumber(text)}
-              mode="outlined"
-            />
-          ) : (
-            <Text style={styles.text}>{phoneNumber}</Text>
-          )}
-          {editMode ? (
-            <Button mode="contained" onPress={handleSave} style={styles.saveButton}>
-              Save
-            </Button>
-          ) : (
-            <Button mode="contained" onPress={() => setEditMode(true)} style={styles.editButton}>
-              Edit
-            </Button>
-          )}
+          <Text style={styles.text}>{phoneNumber}</Text>
+          <Button mode="contained" onPress={handleEdit} style={styles.editButton}>
+            Edit
+          </Button>
         </View>
       </View>
     </View>
@@ -91,7 +81,7 @@ const styles = StyleSheet.create({
   },
   profileContainer: {
     width: '100%',
-    backgroundColor: '#ffffff',
+    backgroundColor: 'rgba(249, 249, 249, 0.4)',
     padding: 20,
     borderRadius: 20,
     shadowColor: '#000',
@@ -108,9 +98,15 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 60,
-    marginBottom: 20,
+    marginBottom: 10,
     borderWidth: 2,
     borderColor: '#007bff',
+  },
+  category: {
+    fontSize: 16,
+    color: '#333',
+    marginBottom: 20,
+    fontStyle: 'italic',
   },
   infoContainer: {
     width: '100%',
@@ -127,16 +123,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     color: '#666',
   },
-  input: {
-    width: '100%',
-    marginBottom: 10,
-  },
   editButton: {
     backgroundColor: '#007bff',
-    marginTop: 20,
-  },
-  saveButton: {
-    backgroundColor: '#28a745',
     marginTop: 20,
   },
 });

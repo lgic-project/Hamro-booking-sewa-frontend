@@ -14,10 +14,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { StyleSheet } from 'react-native';
 import Booking from '../tabs/Booking';
 import Policies from '../TermsandPolicies/Policies';
-import HotelRooms from '../tabs/HotelRooms/HotelRooms';
 import HotelDetailsScreen from '../tabs/ListHotelsScreen/HotelDetails/HotelDetailsScreen';
 import RoomDetailsScreen from '../tabs/ListHotelsScreen/HotelDetails/RoomDetailsScreen';
 import StartScreen from '../StartScreen/StartScreen';
+import ProfileEdit from '../tabs/MenuScreen/UserProfile/ProfileEdit';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -34,7 +34,7 @@ const ListHotelsStack = () => (
     <Stack.Screen name="HotelDetails" component={HotelDetailsScreen} />
     <Stack.Screen name="RoomDetails" component={RoomDetailsScreen} />
     <Stack.Screen name="Booking" component={Booking} />
-  </Stack.Navigator>
+  </Stack.Navigator> 
 );
 
 const BookedHotelsStack = () => (
@@ -47,6 +47,7 @@ const MenuStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false, cardStyle: { flex: 1 }, }}>
     <Stack.Screen name="MenuScreen" component={MenuScreen} />
     <Stack.Screen name="UserProfile" component={UserProfile} />
+    <Stack.Screen name="ProfileEdit" component={ProfileEdit} />
     <Stack.Screen name="Settings" component={Settings} />
     <Stack.Screen name="Policies" component={Policies} />
     <Stack.Screen name="StartScreen" component={StartScreen} />
