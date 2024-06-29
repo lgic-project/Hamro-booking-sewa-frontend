@@ -1,12 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, FlatList, ImageBackground, TouchableOpacity, StyleSheet } from 'react-native';
-
-const HomeScreen = () => {
+import useScrollDirection from '../../../ScrollDirection/useScrollDirection';
+const HomeScreen = ({ setScrollDirection }) => {
   const [hotels, setHotels] = useState([]);
+  const flatListRef = useRef(null);
+  const { isScrollingDown, onScroll } = useScrollDirection(flatListRef);
 
   useEffect(() => {
     fetchHotels();
   }, []);
+
+  useEffect(() => {
+    setScrollDirection(isScrollingDown);
+  }, [isScrollingDown]);
 
   const fetchHotels = async () => {
     try {
@@ -38,9 +44,12 @@ const HomeScreen = () => {
   return (
     <View style={styles.container}>
       <FlatList
+        ref={flatListRef}
         data={hotels}
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
+        onScroll={onScroll}
+        scrollEventThrottle={16}
       />
     </View>
   );

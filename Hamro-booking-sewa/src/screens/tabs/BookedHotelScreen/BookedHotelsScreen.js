@@ -1,9 +1,11 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { View, StyleSheet, FlatList, ActivityIndicator, Modal, Alert } from 'react-native';
 import { Card, Text, Button, Dialog, Portal, Paragraph } from 'react-native-paper';
 import Server from '../../../Server/Server';
+import useScrollDirection from '../../../ScrollDirection/useScrollDirection';
 
-const BookedHotelsScreen = () => {
+
+const BookedHotelsScreen = ({ setScrollDirection }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -12,6 +14,16 @@ const BookedHotelsScreen = () => {
   const [dialogVisible, setDialogVisible] = useState(false);
   const bookingUrl = Server.primaryUrl + "/booking-json";
   const roomUrl = Server.primaryUrl + "/images/hotel/room/"; // Change to the correct URL for room images
+  const flatListRef = useRef(null);
+  const { isScrollingDown, onScroll } = useScrollDirection(flatListRef);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    setScrollDirection(isScrollingDown);
+  }, [isScrollingDown]);
 
   const fetchData = async () => {
     try {
@@ -25,10 +37,6 @@ const BookedHotelsScreen = () => {
       setRefreshing(false);
     }
   };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -78,12 +86,15 @@ const BookedHotelsScreen = () => {
         <ActivityIndicator animating={true} color={'blue'} size={'large'} />
       ) : (
         <FlatList
+          ref={flatListRef}
           data={data}
           renderItem={renderItem}
           keyExtractor={(item, index) => index.toString()}
           contentContainerStyle={styles.flatListContent}
           refreshing={refreshing}
           onRefresh={onRefresh}
+          onScroll={onScroll}
+          scrollEventThrottle={16}
         />
       )}
       {selectedBooking && (

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, TextInput, Text, TouchableOpacity, Pressable, Modal, Alert } from 'react-native';
+import { View, StyleSheet, TextInput, Text, TouchableOpacity, Pressable, Modal, Alert, Platform } from 'react-native';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import Server from '../../Server/Server'; // Import server configuration
 
@@ -46,12 +46,22 @@ const Booking = ({ route, navigation }) => {
 
   const onDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || tempDate;
-    setTempDate(currentDate);
+    if (Platform.OS === 'android') {
+      setShowDatePicker(false);
+      setDate(currentDate);
+    } else {
+      setTempDate(currentDate);
+    }
   };
 
   const onTimeChange = (event, selectedTime) => {
     const currentTime = selectedTime || tempTime;
-    setTempTime(currentTime);
+    if (Platform.OS === 'android') {
+      setShowTimePicker(false);
+      setArrivalTime(currentTime);
+    } else {
+      setTempTime(currentTime);
+    }
   };
 
   const handleDateOkPress = () => {
@@ -123,33 +133,45 @@ const Booking = ({ route, navigation }) => {
           pointerEvents="none"
         />
       </Pressable>
-      <Modal
-        transparent={true}
-        animationType="slide"
-        visible={showDatePicker}
-        onRequestClose={toggleDatePicker}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <RNDateTimePicker
-              mode="date"
-              display="spinner"
-              value={tempDate}
-              onChange={onDateChange}
-              minimumDate={currentDate} // Restrict past dates
-              maximumDate={oneYearFromNow} // Restrict to one year from now
-            />
-            <View style={styles.modalButtons}>
-              <TouchableOpacity onPress={toggleDatePicker} style={styles.button}>
-                <Text style={styles.buttonText}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={handleDateOkPress} style={styles.button}>
-                <Text style={styles.buttonText}>OK</Text>
-              </TouchableOpacity>
+      {Platform.OS === 'ios' && (
+        <Modal
+          transparent={true}
+          animationType="slide"
+          visible={showDatePicker}
+          onRequestClose={toggleDatePicker}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <RNDateTimePicker
+                mode="date"
+                display="spinner"
+                value={tempDate}
+                onChange={onDateChange}
+                minimumDate={currentDate} // Restrict past dates
+                maximumDate={oneYearFromNow} // Restrict to one year from now
+              />
+              <View style={styles.modalButtons}>
+                <TouchableOpacity onPress={toggleDatePicker} style={styles.button}>
+                  <Text style={styles.buttonText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleDateOkPress} style={styles.button}>
+                  <Text style={styles.buttonText}>OK</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
+      )}
+      {Platform.OS === 'android' && showDatePicker && (
+        <RNDateTimePicker
+          mode="date"
+          display="default"
+          value={date}
+          onChange={onDateChange}
+          minimumDate={currentDate} // Restrict past dates
+          maximumDate={oneYearFromNow} // Restrict to one year from now
+        />
+      )}
       <Pressable onPress={toggleTimePicker}>
         <TextInput
           style={styles.input}
@@ -159,31 +181,41 @@ const Booking = ({ route, navigation }) => {
           pointerEvents="none"
         />
       </Pressable>
-      <Modal
-        transparent={true}
-        animationType="slide"
-        visible={showTimePicker}
-        onRequestClose={toggleTimePicker}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <RNDateTimePicker
-              mode="time"
-              display="spinner"
-              value={tempTime}
-              onChange={onTimeChange}
-            />
-            <View style={styles.modalButtons}>
-              <TouchableOpacity onPress={toggleTimePicker} style={styles.button}>
-                <Text style={styles.buttonText}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={handleTimeOkPress} style={styles.button}>
-                <Text style={styles.buttonText}>OK</Text>
-              </TouchableOpacity>
+      {Platform.OS === 'ios' && (
+        <Modal
+          transparent={true}
+          animationType="slide"
+          visible={showTimePicker}
+          onRequestClose={toggleTimePicker}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <RNDateTimePicker
+                mode="time"
+                display="spinner"
+                value={tempTime}
+                onChange={onTimeChange}
+              />
+              <View style={styles.modalButtons}>
+                <TouchableOpacity onPress={toggleTimePicker} style={styles.button}>
+                  <Text style={styles.buttonText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleTimeOkPress} style={styles.button}>
+                  <Text style={styles.buttonText}>OK</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
+      )}
+      {Platform.OS === 'android' && showTimePicker && (
+        <RNDateTimePicker
+          mode="time"
+          display="default"
+          value={arrivalTime}
+          onChange={onTimeChange}
+        />
+      )}
       <TextInput
         style={styles.input}
         placeholder="Number of People"
@@ -208,12 +240,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-  fontWeight: 'bold',
-  marginBottom: 20,
-  textAlign: 'center',
-  backgroundColor: '#949194', // Adding background color
-  color: '#fff', // Text color to contrast with background
-  paddingVertical: 10, // Vertical padding for better spacing
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+    backgroundColor: '#949194', // Adding background color
+    color: '#fff', // Text color to contrast with background
+    paddingVertical: 10, // Vertical padding for better spacing
   },
   input: {
     height: 40,
