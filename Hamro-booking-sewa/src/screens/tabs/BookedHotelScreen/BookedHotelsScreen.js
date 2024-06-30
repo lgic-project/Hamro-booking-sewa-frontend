@@ -61,7 +61,7 @@ const BookedHotelsScreen = ({ setScrollDirection }) => {
     <View style={styles.cardContainer}>
       <Card style={styles.card}>
         <Card.Content style={styles.cardContent}>
-          <Text style={styles.title}>{item.hotel_name}</Text>
+          <Text style={styles.title}>{item.end_user_id}</Text>
           <Text style={styles.subtitle}>Booking ID: {item.booking_id}</Text>
           <Text style={styles.subtitle}>Number of people: {item.total_people}</Text>
           <Text style={styles.subtitle}>Arrival Date: {item.arrival_date}</Text>

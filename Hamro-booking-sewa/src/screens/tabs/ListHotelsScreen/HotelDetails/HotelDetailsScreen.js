@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
-import { Card, Text, Button } from 'react-native-paper';
+import { Card, Text } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import Server from '../../../../Server/Server';  // Ensure the correct path to Server
 
@@ -19,7 +19,8 @@ const HotelDetailsScreen = ({ route }) => {
           <Text style={styles.headerTitle}>{hotel.title}</Text>
         </View>
       </View>
-      <View style={styles.contentContainer}>
+      
+      <View style={styles.hotelInfoContainer}>
         <Card style={styles.card}>
           <Card.Content>
             <Text style={styles.description}>{hotel.description}</Text>
@@ -28,23 +29,26 @@ const HotelDetailsScreen = ({ route }) => {
             <Text style={styles.label}>Contact:</Text>
             <Text style={styles.text}>Phone: {hotel.phone_number}</Text>
             <Text style={styles.text}>Email: {hotel.email}</Text>
-            <Text style={styles.label}>Rooms:</Text>
-            {hotel.rooms.map((room) => (
-              <TouchableOpacity key={room.id} onPress={() => navigation.navigate('RoomDetails', { room })}>
-                <Card style={styles.roomCard}>
-                  <View style={styles.roomContainer}>
-                    <Image source={{ uri: roomImageUrl + room.room_thumbnail }} style={styles.roomImage} />
-                    <View style={styles.roomDetails}>
-                      <Text style={styles.roomTitle}>{room.title}</Text>
-                      <Text style={styles.priceText}>Price: {room.price}</Text>
-                      <Text style={styles.text}>Availability: {room.is_available}</Text>
-                    </View>
-                  </View>
-                </Card>
-              </TouchableOpacity>
-            ))}
           </Card.Content>
         </Card>
+      </View>
+
+      <View style={styles.roomsContainer}>
+        <Text style={styles.sectionTitle}>Rooms:</Text>
+        {hotel.rooms.map((room) => (
+          <TouchableOpacity key={room.id} onPress={() => navigation.navigate('RoomDetails', { room })}>
+            <Card style={styles.roomCard}>
+              <View style={styles.roomContainer}>
+                <Image source={{ uri: roomImageUrl + room.room_thumbnail }} style={styles.roomImage} />
+                <View style={styles.roomDetails}>
+                  <Text style={styles.roomTitle}>{room.title}</Text>
+                  <Text style={styles.priceText}>Price: {room.price}</Text>
+                  <Text style={styles.text}>Availability: {room.is_available}</Text>
+                </View>
+              </View>
+            </Card>
+          </TouchableOpacity>
+        ))}
       </View>
     </ScrollView>
   );
@@ -77,12 +81,21 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
   },
-  contentContainer: {
+  hotelInfoContainer: {
     padding: 10,
+    marginBottom: 10,
+  },
+  roomsContainer: {
+    padding: 20,
+  },
+  sectionTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 15,
   },
   card: {
     borderRadius: 10,
-    marginBottom: 15,
+    marginBottom: 5,
     elevation: 3,
   },
   description: {
@@ -115,7 +128,7 @@ const styles = StyleSheet.create({
   },
   roomImage: {
     width: 100,
-    height: 100,
+    height: 120,
   },
   roomDetails: {
     flex: 1,

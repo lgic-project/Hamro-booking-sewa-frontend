@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   TouchableOpacity,
   StyleSheet,
@@ -7,6 +7,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
+  Alert
 } from 'react-native';
 import { Text, TextInput as PaperTextInput } from 'react-native-paper';
 import Header from '../../components/Header';
@@ -16,8 +17,8 @@ import { theme } from '../../core/theme';
 import { emailValidator } from '../../helpers/emailValidator';
 import { passwordValidator } from '../../helpers/passwordValidator';
 import { Feather } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import Server from '../../Server/Server';
+import { UserContext } from '../UserContext/UserContext';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState({ value: '', error: '' });
@@ -25,6 +26,7 @@ export default function LoginScreen({ navigation }) {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [csrfToken, setCsrfToken] = useState('');
+  const { setUser } = useContext(UserContext); // Use UserContext
   const apiUrl = Server.primaryUrl;
 
   useEffect(() => {
@@ -32,12 +34,7 @@ export default function LoginScreen({ navigation }) {
       method: 'GET',
       credentials: 'include', // Include cookies if necessary
     })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
+      .then(response => response.json())
       .then(data => {
         if (data && data.csrfToken) {
           setCsrfToken(data.csrfToken);
@@ -50,7 +47,7 @@ export default function LoginScreen({ navigation }) {
       });
   }, []);
 
-  const onLoginPressed = async () => {
+  const handleLogin = async () => {
     const emailError = emailValidator(email.value);
     const passwordError = passwordValidator(password.value);
     if (emailError || passwordError) {
@@ -67,7 +64,7 @@ export default function LoginScreen({ navigation }) {
     };
 
     try {
-      const response = await fetch(`${apiUrl}/login-mob`, {
+      const response = await fetch(`${apiUrl}/login/mobile`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -78,30 +75,39 @@ export default function LoginScreen({ navigation }) {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Login failed');
+        throw new Error(`HTTP error! Status: ${response.status} - ${errorData.message}`);
       }
 
       const data = await response.json();
-
       setLoading(false);
 
-      // Check if access_token exists
-      if (!data.access_token) {
-        throw new Error('Access token not found in response');
+      console.log('Login Successful', data);
+      Alert.alert('Login Successful', 'You have been logged in successfully');
+
+      // Set user data in context
+      setUser(data.user);
+
+      // Check user category and navigate accordingly
+      if (data.user.category === 'user') {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Dashboard' }],
+        });
+      } else if (data.user.category === 'hotel') {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Hotel-Dashboard' }],
+        });
+      } else if (data.user.category === 'superadmin') {
+        Alert.alert('Login Failed', 'Cannot log in with superadmin account');
       }
-
-      // Store the token securely using AsyncStorage
-      await AsyncStorage.setItem('token', data.access_token);
-
-      // Navigate to the Dashboard screen upon successful login
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Dashboard' }],
-      });
     } catch (error) {
       setLoading(false);
-      console.error('Login error:', error);
-      // Handle login error, e.g., show error message
+      console.error('Error:', error);
+      Alert.alert(
+        'Login Failed',
+        error.message || 'Failed to login. Please check your credentials and try again.'
+      );
       setPassword({ ...password, error: 'Invalid email or password' });
     }
   };
@@ -134,7 +140,6 @@ export default function LoginScreen({ navigation }) {
         />
       </View>
 
-      {/* Password field */}
       <View style={styles.inputContainer}>
         <PaperTextInput
           label="Password"
@@ -147,7 +152,7 @@ export default function LoginScreen({ navigation }) {
           theme={{ colors: { primary: theme.colors.primary } }}
         />
         <Feather
-          name={showPassword ? "eye" : "eye-off"}
+          name={showPassword ? 'eye' : 'eye-off'}
           size={20}
           color="black"
           onPress={() => setShowPassword(!showPassword)}
@@ -161,11 +166,10 @@ export default function LoginScreen({ navigation }) {
         </TouchableOpacity>
       </View>
 
-      {/* Displaying error message */}
       {email.error && <Text style={styles.error}>{email.error}</Text>}
       {password.error && <Text style={styles.error}>{password.error}</Text>}
 
-      <Button mode="outlined" onPress={onLoginPressed} style={{ color: "#CBC3E3" }}>
+      <Button mode="outlined" onPress={handleLogin} style={{ color: '#CBC3E3' }}>
         {loading ? (
           <ActivityIndicator animating={true} color={theme.colors.primary} />
         ) : (
@@ -189,21 +193,21 @@ export default function LoginScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF', // Set background color to white
+    backgroundColor: '#FFFFFF',
     paddingHorizontal: 20,
     justifyContent: 'center',
   },
   logoContainer: {
-    alignItems: 'center', // Center the logo horizontally
-    marginBottom: 5, // Add some margin at the bottom of the logo
+    alignItems: 'center',
+    marginBottom: 5,
   },
   logo: {
     width: 200,
     height: 180,
   },
   headerContainer: {
-    alignItems: 'center', // Center the header horizontally
-    marginBottom: 5, // Add some margin at the bottom of the header
+    alignItems: 'center',
+    marginBottom: 5,
   },
   inputContainer: {
     width: '100%',

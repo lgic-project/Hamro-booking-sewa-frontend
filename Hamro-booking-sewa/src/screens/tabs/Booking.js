@@ -1,10 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, StyleSheet, TextInput, Text, TouchableOpacity, Pressable, Modal, Alert, Platform } from 'react-native';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import Server from '../../Server/Server'; // Import server configuration
+import { UserContext } from '../UserContext/UserContext';
+
+function generateBookingId(length) {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  const charLength = characters.length;
+  let bookingId = '';
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * charLength);
+    bookingId += characters[randomIndex];
+  }
+  return bookingId;
+}
 
 const Booking = ({ route, navigation }) => {
-  const { room } = route.params;
+  const { user } = useContext(UserContext) || {};
+  const { room } = route.params || {};
   const [date, setDate] = useState(new Date());
   const [tempDate, setTempDate] = useState(new Date());
   const [arrivalTime, setArrivalTime] = useState(new Date());
@@ -13,28 +26,41 @@ const Booking = ({ route, navigation }) => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [csrfToken, setCsrfToken] = useState('');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    if (!user || !user.id) {
+      console.error('User information is missing.');
+      return;
+    }
+    if (!room || !room.id) {
+      console.error('Room information is missing.');
+      return;
+    }
+
+    fetchCsrfToken();
+  }, []);
+
+  const fetchCsrfToken = () => {
     fetch(Server.primaryUrl + '/csrf-token', {
       method: 'GET',
-      credentials: 'include', // Include cookies if necessary
+      credentials: 'include',
     })
       .then(response => response.text())
       .then(text => {
-        let data;
         try {
-          data = JSON.parse(text);
+          const data = JSON.parse(text);
+          setCsrfToken(data.csrfToken);
         } catch (error) {
           console.error('Error parsing JSON:', error);
           throw new Error('Invalid JSON response');
         }
-
-        setCsrfToken(data.csrfToken);
       })
       .catch(error => {
         console.error('Error fetching CSRF token:', error);
+        Alert.alert('Error', 'Failed to fetch CSRF token.');
       });
-  }, []);
+  };
 
   const toggleDatePicker = () => {
     setShowDatePicker(!showDatePicker);
@@ -75,20 +101,20 @@ const Booking = ({ route, navigation }) => {
   };
 
   const handleBooking = () => {
-    const formattedDate = date.toISOString().split('T')[0]; // Format date to YYYY-MM-DD
-    const formattedTime = arrivalTime.toTimeString().split(' ')[0].substring(0, 5); // Format time to HH:MM
+    setLoading(true);
+
+    const formattedDate = date.toISOString().split('T')[0];
+    const formattedTime = arrivalTime.toTimeString().split(' ')[0].substring(0, 5);
 
     const bookingData = {
-      hotel_user_id: '2',
-      room_id: '1',
-      end_user_id:'3',
+      hotel_user_id: user.id,
+      end_user_id: user.id,
+      room_id: room.id,
       total_people: people,
-      booking_id: 'ABCD',
+      booking_id: generateBookingId(8),
       arrival_date: formattedDate,
       arrival_time: formattedTime,
     };
-
-    console.log('Booking Data to be sent:', bookingData);
 
     fetch(`${Server.primaryUrl}/booking/store`, {
       method: 'POST',
@@ -99,9 +125,8 @@ const Booking = ({ route, navigation }) => {
       body: JSON.stringify(bookingData),
     })
       .then(response => {
-        console.log('Response status:', response.status);
+        setLoading(false);
         if (!response.ok) {
-          console.log('Response data:', JSON.stringify(bookingData));
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
         return response.json();
@@ -112,14 +137,23 @@ const Booking = ({ route, navigation }) => {
         navigation.goBack();
       })
       .catch(error => {
+        setLoading(false);
         console.error('Error:', error);
-        Alert.alert('Error confirming booking. Please try again.');
+        Alert.alert('Error', 'Failed to confirm booking. Please try again.');
       });
   };
 
-  const currentDate = new Date(); // Get the current date
+  const currentDate = new Date();
   const oneYearFromNow = new Date();
-  oneYearFromNow.setFullYear(currentDate.getFullYear() + 1); // Set the date one year in the future
+  oneYearFromNow.setFullYear(currentDate.getFullYear() + 1);
+
+  if (!user || !user.id || !room || !room.id) {
+    return (
+      <View style={styles.container}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -147,8 +181,8 @@ const Booking = ({ route, navigation }) => {
                 display="spinner"
                 value={tempDate}
                 onChange={onDateChange}
-                minimumDate={currentDate} // Restrict past dates
-                maximumDate={oneYearFromNow} // Restrict to one year from now
+                minimumDate={currentDate}
+                maximumDate={oneYearFromNow}
               />
               <View style={styles.modalButtons}>
                 <TouchableOpacity onPress={toggleDatePicker} style={styles.button}>
@@ -168,8 +202,8 @@ const Booking = ({ route, navigation }) => {
           display="default"
           value={date}
           onChange={onDateChange}
-          minimumDate={currentDate} // Restrict past dates
-          maximumDate={oneYearFromNow} // Restrict to one year from now
+          minimumDate={currentDate}
+          maximumDate={oneYearFromNow}
         />
       )}
       <Pressable onPress={toggleTimePicker}>
@@ -223,8 +257,8 @@ const Booking = ({ route, navigation }) => {
         onChangeText={setPeople}
         keyboardType="numeric"
       />
-      <TouchableOpacity style={styles.button} onPress={handleBooking}>
-        <Text style={styles.buttonText}>Confirm Booking</Text>
+      <TouchableOpacity style={styles.button} onPress={handleBooking} disabled={loading}>
+        <Text style={styles.buttonText}>{loading ? 'Loading...' : 'Confirm Booking'}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -243,9 +277,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
-    backgroundColor: '#949194', // Adding background color
-    color: '#fff', // Text color to contrast with background
-    paddingVertical: 10, // Vertical padding for better spacing
+    backgroundColor: '#949194',
+    color: '#fff',
+    paddingVertical: 10,
   },
   input: {
     height: 40,

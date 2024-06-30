@@ -3,6 +3,8 @@ import { Provider } from 'react-native-paper';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { theme } from './src/core/theme';
+
+
 import {
   StartScreen,
   LoginScreen,
@@ -12,15 +14,18 @@ import {
 } from './src/screens';
 import SplashScreen from './src/screens/splash/SplashScreen';
 import MenuScreen from './src/screens/tabs/MenuScreen/MenuScreen';
+import { UserProvider } from './src/screens/UserContext/UserContext';
+import HotelDashboard from './src/screens/HotelSection/HotelDashboard';
 
 const Stack = createStackNavigator();
 
 export default function App() {
   return (
+    <UserProvider>
     <Provider theme={theme}>
       <NavigationContainer>
         <Stack.Navigator
-          initialRouteName="Dashboard"
+          initialRouteName="StartScreen"
           screenOptions={{
             headerShown: false,
           }}
@@ -35,8 +40,10 @@ export default function App() {
             component={ResetPasswordScreen}
           />
           <Stack.Screen name="Splash" component={SplashScreen} />
+          <Stack.Screen name="Hotel-Dashboard" component={HotelDashboard} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>
+    </UserProvider>
   );
 }

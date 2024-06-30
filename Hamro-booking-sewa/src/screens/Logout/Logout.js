@@ -1,92 +1,68 @@
-import React from "react";
-import { View, Text, Modal, StyleSheet, TouchableOpacity } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+// LogoutScreen.js
+import React, { useContext, useState } from 'react';
+import { View, Text, StyleSheet, Button, Alert } from 'react-native';
+import { UserContext } from '../UserContext/UserContext';
 
-const Logout = ({ visible }) => {
-  const navigation = useNavigation();
-
-  const handleCancel = () => {
-    navigation.navigate("MenuScreen");
-  };
+const Logout = ({ navigation }) => {
+  const { setUser } = useContext(UserContext);
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   const handleLogout = () => {
-    // console.log('Logout Pending');
+    // Clear user context and navigate to login screen
+    setUser(null);
     navigation.reset({
       index: 0,
-      routes: [{ name: 'Dashboard' }],
+      routes: [{ name: 'LoginScreen' }],
     });
   };
 
+  const confirmLogout = () => {
+    setShowConfirmation(true);
+  };
+
+  const cancelLogout = () => {
+    // Navigate back to the previous screen
+    navigation.goBack();
+  };
+
   return (
-    <Modal visible={visible} transparent animationType="fade">
-      <View style={styles.container}>
-        <View style={styles.modal}>
-          <Text style={styles.title}>Are you sure you want to logout?</Text>
+    <View style={styles.container}>
+          <Text style={styles.confirmationText}>Are you sure you want to logout?</Text>
           <View style={styles.buttonContainer}>
-            <TouchableOpacity onPress={handleCancel} style={[styles.button, styles.cancelButton]}>
-              <Text style={styles.buttonText}>No</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={handleLogout} style={[styles.button, styles.confirmButton]}>
-              <Text style={styles.buttonText}>Yes</Text>
-            </TouchableOpacity>
+            <Button title="Cancel" onPress={cancelLogout} />
+            <Button title="Logout" onPress={handleLogout} />
           </View>
         </View>
-      </View>
-    </Modal>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  modal: {
-    backgroundColor: "#fff",
-    padding: 30,
-    borderRadius: 15,
-    alignItems: "center",
-    width: '80%',
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+  centeredContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  title: {
-    fontSize: 20,
+  text: {
+    fontSize: 24,
     marginBottom: 20,
-    textAlign: "center",
-    color: "#333",
-    fontWeight: "bold",
+  },
+  confirmationContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  confirmationText: {
+    fontSize: 18,
+    marginBottom: 20,
   },
   buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: '100%',
-  },
-  button: {
-    flex: 1,
-    paddingVertical: 15,
-    marginHorizontal: 10,
-    borderRadius: 25,
-    alignItems: "center",
-  },
-  cancelButton: {
-    backgroundColor: "#6c757d",
-  },
-  confirmButton: {
-    backgroundColor: "#dc3545",
-  },
-  buttonText: {
-    color: "white",
-    fontSize: 18,
-    fontWeight: "bold",
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '80%',
+    marginTop: 20,
   },
 });
 

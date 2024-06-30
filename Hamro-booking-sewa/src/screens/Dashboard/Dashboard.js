@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-import { NavigationContainer } from '@react-navigation/native';
 import { AntDesign, Entypo, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StyleSheet } from 'react-native';
@@ -17,6 +16,7 @@ import HotelDetailsScreen from '../tabs/ListHotelsScreen/HotelDetails/HotelDetai
 import RoomDetailsScreen from '../tabs/ListHotelsScreen/HotelDetails/RoomDetailsScreen';
 import StartScreen from '../StartScreen/StartScreen';
 import ProfileEdit from '../tabs/MenuScreen/UserProfile/ProfileEdit';
+import Logout from '../Logout/Logout';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -57,6 +57,7 @@ const MenuStack = ({ setScrollDirection }) => (
     <Stack.Screen name="ProfileEdit" component={ProfileEdit} />
     <Stack.Screen name="Settings" component={Settings} />
     <Stack.Screen name="Policies" component={Policies} />
+    <Stack.Screen name="Logout" component={Logout} />
     <Stack.Screen name="StartScreen" component={StartScreen} />
   </Stack.Navigator>
 );
@@ -65,7 +66,7 @@ const Dashboard = () => {
   const [isScrollingDown, setIsScrollingDown] = useState(false);
 
   return (
-    <NavigationContainer independent={true}>
+    
       <SafeAreaView style={{flex: 1}}>
         <Tab.Navigator
           backBehavior='firstRoute'
@@ -124,7 +125,6 @@ const Dashboard = () => {
           </Tab.Screen>
         </Tab.Navigator>
       </SafeAreaView>
-    </NavigationContainer>
   );
 };
 

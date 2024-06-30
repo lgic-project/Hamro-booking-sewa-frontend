@@ -1,10 +1,12 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { View, StyleSheet, FlatList, ActivityIndicator, TextInput } from 'react-native';
 import { Card, Text, Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import Server from '../../../Server/Server';
+import useScrollDirection from '../../../ScrollDirection/useScrollDirection';
 
-const ListHotelsScreen = () => {
+
+const ListHotelsScreen = ({ setScrollDirection }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -13,6 +15,16 @@ const ListHotelsScreen = () => {
   const homeUrl = Server.primaryUrl + "/images/hotel/";
 
   const navigation = useNavigation();
+  const flatListRef = useRef(null);
+  const { isScrollingDown, onScroll } = useScrollDirection(flatListRef);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    setScrollDirection(isScrollingDown);
+  }, [isScrollingDown]);
 
   const fetchData = async () => {
     try {
@@ -26,10 +38,6 @@ const ListHotelsScreen = () => {
       setRefreshing(false);
     }
   };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -74,12 +82,15 @@ const ListHotelsScreen = () => {
         <ActivityIndicator animating={true} color={'blue'} size={'large'} />
       ) : (
         <FlatList
+          ref={flatListRef}
           data={filteredData}
           renderItem={renderItem}
           keyExtractor={(item, index) => index.toString()}
           contentContainerStyle={styles.flatListContent}
           refreshing={refreshing}
           onRefresh={onRefresh}
+          onScroll={onScroll}
+          scrollEventThrottle={16}
         />
       )}
     </View>

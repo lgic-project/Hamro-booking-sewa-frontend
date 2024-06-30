@@ -9,7 +9,14 @@ const RoomDetailsScreen = ({ route }) => {
   const roomImageUrl = Server.primaryUrl + "/images/hotel/room/";
   const navigation = useNavigation();
 
-  // Check if room is defined before using its properties
+  if (!room) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.errorText}>Room details are not available.</Text>
+      </View>
+    );
+  }
+
   const availabilityColor = room.is_available ? 'green' : 'red';
 
   return (
@@ -34,7 +41,7 @@ const RoomDetailsScreen = ({ route }) => {
           <Card.Content>
             <Text style={styles.description}>{room.description}</Text>
             <Text style={styles.price}>Price: {room.price}</Text>
-            <Text style={[styles.availability, { color: availabilityColor }]}>Availability: {room.is_available}</Text>
+            <Text style={[styles.availability, { color: availabilityColor }]}>Availability: {room.is_available ? "Available" : "Not Available"}</Text>
             <Button
               mode="outlined"
               style={styles.button}
@@ -55,6 +62,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f0f0f0',
+  },
+  errorText: {
+    fontSize: 18,
+    color: 'red',
+    textAlign: 'center',
+    marginTop: 20,
   },
   headerContainer: {
     position: 'relative',

@@ -1,6 +1,7 @@
 import React from 'react';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
 import { Button, useTheme } from 'react-native-paper';
+import LogoutScreen from '../../HotelSection/Logout/LogoutScreen';
 
 const MenuScreen = ({ navigation }) => {
   const theme = useTheme();
@@ -45,7 +46,7 @@ const MenuScreen = ({ navigation }) => {
         </Button>
         <Button
           mode="contained"
-          onPress={handleLogout}
+          onPress={() => navigation.navigate('Logout')}
           style={styles.button}
           labelStyle={styles.buttonText}
           buttonColor="#008080" // Teal color
