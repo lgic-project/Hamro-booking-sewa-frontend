@@ -7,7 +7,7 @@ import { UserContext } from '../../UserContext/UserContext';
 
 
 
-const BookedHotelsScreen = ({ setScrollDirection }) => {
+const BookedHotelsScreen = ({ setScrollDirection, navigation }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -67,15 +67,13 @@ const BookedHotelsScreen = ({ setScrollDirection }) => {
     <View style={styles.cardContainer}>
       <Card style={styles.card}>
         <Card.Content style={styles.cardContent}>
-          <Text style={styles.title}>{item.end_user_id}</Text>
-          <Text style={styles.subtitle}>{item.id}</Text>
           <Text style={styles.subtitle}>Booking ID: {item.booking_id}</Text>
           <Text style={styles.subtitle}>Number of people: {item.total_people}</Text>
           <Text style={styles.subtitle}>Arrival Date: {item.arrival_date}</Text>
           <Text style={styles.subtitle}>Arrival Time: {item.arrival_time}</Text>
           <Button mode="contained" onPress={() => {
             setSelectedBooking(item);
-            setModalVisible(true);
+            navigation.navigate('BookingDetails', { bookingId: item.id });
           }}>
             View Details
           </Button>

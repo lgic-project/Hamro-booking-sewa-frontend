@@ -5,7 +5,7 @@ import BackButton from '../../components/BackButton';
 const Policies = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
-      <BackButton goBack={navigation.goBack} />
+      {/* <BackButton goBack={navigation.goBack} /> */}
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.contentContainer}>
           <Text style={styles.heading}>Terms and Policies</Text>

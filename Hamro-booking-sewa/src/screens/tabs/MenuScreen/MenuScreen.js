@@ -1,7 +1,6 @@
 import React from 'react';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
 import { Button, useTheme } from 'react-native-paper';
-import LogoutScreen from '../../HotelSection/Logout/LogoutScreen';
 
 const MenuScreen = ({ navigation }) => {
   const theme = useTheme();
@@ -22,34 +21,25 @@ const MenuScreen = ({ navigation }) => {
           onPress={() => navigation.navigate('UserProfile')}
           style={styles.button}
           labelStyle={styles.buttonText}
-          buttonColor="#008080" // Teal color
+          color="#008080" // Teal color
         >
           Profile
-        </Button>
-        <Button
-          mode="contained"
-          onPress={() => navigation.navigate('Settings')}
-          style={styles.button}
-          labelStyle={styles.buttonText}
-          buttonColor="#008080" // Teal color
-        >
-          Settings
         </Button>
         <Button
           mode="contained"
           onPress={() => navigation.navigate('Policies')}
           style={styles.button}
           labelStyle={styles.buttonText}
-          buttonColor="#008080" // Teal color
+          color="#008080" // Teal color
         >
           Terms and Policies
         </Button>
         <Button
           mode="contained"
           onPress={() => navigation.navigate('Logout')}
-          style={styles.button}
+          style={[styles.button, styles.logoutButton]} // Additional style for logout button
           labelStyle={styles.buttonText}
-          buttonColor="#008080" // Teal color
+          color="#FF6347" // Tomato color for logout button
         >
           Logout
         </Button>
@@ -68,16 +58,20 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    width: '100%',
+    paddingHorizontal: 20,
   },
   button: {
     marginVertical: 10,
-    width: '80%',
+    width: '100%',
+    backgroundColor: '#008080', // Teal color
   },
   buttonText: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#FFFFFF',
+  },
+  logoutButton: {
+    backgroundColor: '#FF6347', // Tomato color
   },
 });
 

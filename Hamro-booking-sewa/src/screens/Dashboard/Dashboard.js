@@ -17,21 +17,32 @@ import RoomDetailsScreen from '../tabs/ListHotelsScreen/HotelDetails/RoomDetails
 import StartScreen from '../StartScreen/StartScreen';
 import ProfileEdit from '../tabs/MenuScreen/UserProfile/ProfileEdit';
 import Logout from '../Logout/Logout';
+import BookingDetails from '../tabs/BookedHotelScreen/BookingDetails';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 const HomeStack = ({ setScrollDirection }) => (
-  <Stack.Navigator screenOptions={{ headerShown: false , cardStyle: { flex: 1 },}} >
-    <Stack.Screen name="HomeScreen">
+  <Stack.Navigator screenOptions={{ headerShown: true , headerStyle: {
+    height: 45,
+  },
+  headerTitleStyle: {
+    fontSize: 22,
+  }, cardStyle: { flex: 1 },}} >
+    <Stack.Screen name="Hamro Booking Sewa">
       {(props) => <HomeScreen {...props} setScrollDirection={setScrollDirection} />}
     </Stack.Screen>
   </Stack.Navigator>
 );
 
 const ListHotelsStack = ({ setScrollDirection }) => (
-  <Stack.Navigator screenOptions={{ headerShown: false, cardStyle: { flex: 1 }, }}>
-    <Stack.Screen name="ListHotels">
+  <Stack.Navigator screenOptions={{ headerShown: true,headerStyle: {
+    height: 45,
+  },
+  headerTitleStyle: {
+    fontSize: 22,
+  }, cardStyle: { flex: 1, alignContent: 'center', }, }}>
+    <Stack.Screen name="Hamro Booking Sewa">
       {(props) => <ListHotelsScreen {...props} setScrollDirection={setScrollDirection} />}
     </Stack.Screen>
     <Stack.Screen name="HotelDetails" component={HotelDetailsScreen} />
@@ -41,16 +52,27 @@ const ListHotelsStack = ({ setScrollDirection }) => (
 );
 
 const BookedHotelsStack = ({ setScrollDirection }) => (
-  <Stack.Navigator screenOptions={{ headerShown: false, cardStyle: { flex: 1 }, }}>
-    <Stack.Screen name="BookedHotels">
+  <Stack.Navigator screenOptions={{ headerShown: true, headerStyle: {
+    height: 50,
+  },
+  headerTitleStyle: {
+    fontSize: 22,
+  }, cardStyle: { flex: 1 }, }}>
+    <Stack.Screen name="Hamro Booking Sewa">
       {(props) => <BookedHotelsScreen {...props} setScrollDirection={setScrollDirection} />}
     </Stack.Screen>
+    <Stack.Screen name="BookingDetails" component={BookingDetails} />
   </Stack.Navigator>
 );
 
 const MenuStack = ({ setScrollDirection }) => (
-  <Stack.Navigator screenOptions={{ headerShown: false, cardStyle: { flex: 1 }, }}>
-    <Stack.Screen name="MenuScreen">
+  <Stack.Navigator screenOptions={{ headerShown: true, headerStyle: {
+    height: 40,
+  },
+  headerTitleStyle: {
+    fontSize: 20,
+  }, cardStyle: { flex: 1 }, }}>
+    <Stack.Screen name="Hamro Booking Sewa">
       {(props) => <MenuScreen {...props} setScrollDirection={setScrollDirection} />}
     </Stack.Screen>
     <Stack.Screen name="UserProfile" component={UserProfile} />

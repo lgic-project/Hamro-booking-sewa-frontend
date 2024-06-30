@@ -1,49 +1,22 @@
-import React, { useState } from 'react'
-import Background from '../../components/Background'
-import BackButton from '../../components/BackButton'
-import Logo from '../../components/Logo'
-import Header from '../../components/Header'
-import TextInput from '../../components/TextInput'
-import Button from '../../components/Button'
-import { emailValidator } from '../../helpers/emailValidator'
+import { WebView } from 'react-native-webview';
+import Constants from 'expo-constants';
+import { StyleSheet } from 'react-native';
+import Server from '../../Server/Server';
 
-export default function ResetPasswordScreen({ navigation }) {
-  const [email, setEmail] = useState({ value: '', error: '' })
+const apiUrl = Server.primaryUrl;
 
-  const sendResetPasswordEmail = () => {
-    const emailError = emailValidator(email.value)
-    if (emailError) {
-      setEmail({ ...email, error: emailError })
-      return
-    }
-    navigation.navigate('LoginScreen')
-  }
-
+export default function App() {
   return (
-    <Background>
-      <BackButton goBack={navigation.goBack} />
-      <Logo />
-      <Header>Reset your password.</Header>
-      <TextInput
-        label="Email"
-        returnKeyType="done"
-        value={email.value}
-        onChangeText={(text) => setEmail({ value: text, error: '' })}
-        error={!!email.error}
-        errorText={email.error}
-        autoCapitalize="none"
-        autoCompleteType="email"
-        textContentType="emailAddress"
-        keyboardType="email-address"
-        description="You will receive an email with the reset link."
-      />
-      <Button
-        mode="outlined"
-        onPress={sendResetPasswordEmail}
-        style={{ marginTop: 16 }}
-      >
-        Continue
-      </Button>
-    </Background>
-  )
+    <WebView
+      style={styles.container}
+      source={{ uri: `${apiUrl}/password/reset` }}
+    />
+  );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginTop: Constants.statusBarHeight,
+  },
+});

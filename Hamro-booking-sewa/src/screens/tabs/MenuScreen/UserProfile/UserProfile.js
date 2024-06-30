@@ -34,7 +34,7 @@ const UserProfile = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <BackButton goBack={navigation.goBack} />
+      {/* <BackButton goBack={navigation.goBack} /> */}
       <View style={[styles.profileContainer, Platform.OS === 'ios' ? styles.iosShadow : styles.androidShadow]}>
         <Image source={require('../../../../assets/profile.png')} style={styles.profilePic} />
         <Text style={styles.category}>Account Type: {category}</Text>
@@ -45,9 +45,9 @@ const UserProfile = ({ navigation }) => {
           <Text style={styles.text}>{email}</Text>
           <Text style={styles.label}>Phone Number</Text>
           <Text style={styles.text}>{phone_number}</Text>
-          <Button mode="contained" onPress={handleEdit} style={styles.editButton}>
+          {/* <Button mode="contained" onPress={handleEdit} style={styles.editButton}>
             Edit
-          </Button>
+          </Button> */}
         </View>
       </View>
     </View>
