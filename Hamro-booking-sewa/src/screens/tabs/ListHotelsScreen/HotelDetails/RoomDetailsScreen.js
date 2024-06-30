@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import Server from '../../../../Server/Server';  // Ensure the correct path to Server
 
 const RoomDetailsScreen = ({ route }) => {
-  const { room } = route.params;
+  const { hotel , room } = route.params;
   const roomImageUrl = Server.primaryUrl + "/images/hotel/room/";
   const navigation = useNavigation();
 
@@ -29,7 +29,7 @@ const RoomDetailsScreen = ({ route }) => {
             <Button
               mode="contained"
               style={styles.bookButton}
-              onPress={() => navigation.navigate('Booking', { room })}
+              onPress={() => navigation.navigate('Booking', {hotel ,  room })}
             >
               Book Now
             </Button>

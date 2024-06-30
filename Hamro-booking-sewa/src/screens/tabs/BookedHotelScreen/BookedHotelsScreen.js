@@ -1,8 +1,10 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useContext } from 'react';
 import { View, StyleSheet, FlatList, ActivityIndicator, Modal, Alert } from 'react-native';
 import { Card, Text, Button, Dialog, Portal, Paragraph } from 'react-native-paper';
 import Server from '../../../Server/Server';
 import useScrollDirection from '../../../ScrollDirection/useScrollDirection';
+import { UserContext } from '../../UserContext/UserContext';
+
 
 
 const BookedHotelsScreen = ({ setScrollDirection }) => {
@@ -12,10 +14,14 @@ const BookedHotelsScreen = ({ setScrollDirection }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [dialogVisible, setDialogVisible] = useState(false);
-  const bookingUrl = Server.primaryUrl + "/booking-json";
+  const bookingUrl = Server.primaryUrl + "/dashboard/view-end-user-booking/";
   const roomUrl = Server.primaryUrl + "/images/hotel/room/"; // Change to the correct URL for room images
   const flatListRef = useRef(null);
   const { isScrollingDown, onScroll } = useScrollDirection(flatListRef);
+
+  const {user} = useContext(UserContext)|| {};
+  // console.log(user.id);
+  
 
   useEffect(() => {
     fetchData();
@@ -27,7 +33,7 @@ const BookedHotelsScreen = ({ setScrollDirection }) => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch(bookingUrl);
+      const response = await fetch(bookingUrl + user.id);
       const json = await response.json();
       setData(json);
     } catch (error) {
@@ -62,6 +68,7 @@ const BookedHotelsScreen = ({ setScrollDirection }) => {
       <Card style={styles.card}>
         <Card.Content style={styles.cardContent}>
           <Text style={styles.title}>{item.end_user_id}</Text>
+          <Text style={styles.subtitle}>{item.id}</Text>
           <Text style={styles.subtitle}>Booking ID: {item.booking_id}</Text>
           <Text style={styles.subtitle}>Number of people: {item.total_people}</Text>
           <Text style={styles.subtitle}>Arrival Date: {item.arrival_date}</Text>

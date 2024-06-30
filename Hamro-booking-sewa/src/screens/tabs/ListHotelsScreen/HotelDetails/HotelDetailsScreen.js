@@ -36,7 +36,7 @@ const HotelDetailsScreen = ({ route }) => {
       <View style={styles.roomsContainer}>
         <Text style={styles.sectionTitle}>Rooms:</Text>
         {hotel.rooms.map((room) => (
-          <TouchableOpacity key={room.id} onPress={() => navigation.navigate('RoomDetails', { room })}>
+          <TouchableOpacity key={room.id} onPress={() => navigation.navigate('RoomDetails', { hotel , room })}>
             <Card style={styles.roomCard}>
               <View style={styles.roomContainer}>
                 <Image source={{ uri: roomImageUrl + room.room_thumbnail }} style={styles.roomImage} />

@@ -17,7 +17,7 @@ function generateBookingId(length) {
 
 const Booking = ({ route, navigation }) => {
   const { user } = useContext(UserContext) || {};
-  const { room } = route.params || {};
+  const { hotel , room } = route.params || {};
   const [date, setDate] = useState(new Date());
   const [tempDate, setTempDate] = useState(new Date());
   const [arrivalTime, setArrivalTime] = useState(new Date());
@@ -107,7 +107,7 @@ const Booking = ({ route, navigation }) => {
     const formattedTime = arrivalTime.toTimeString().split(' ')[0].substring(0, 5);
 
     const bookingData = {
-      hotel_user_id: user.id,
+      hotel_user_id: hotel.user_id,
       end_user_id: user.id,
       room_id: room.id,
       total_people: people,
