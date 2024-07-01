@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
   button: {
     marginVertical: 10,
     width: '100%',
-    backgroundColor: '#008080', // Teal color
+    backgroundColor: '#1877F2', // Teal color
   },
   buttonText: {
     fontSize: 18,

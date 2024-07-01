@@ -7,16 +7,19 @@ import { FontAwesome, Entypo, MaterialIcons, MaterialCommunityIcons } from '@exp
 import BookingScreen from './Booking/BookingScreen';
 import AddRoomsScreen from './AddRooms/AddRoomsScreen';
 import ViewRoomsScreen from './ViewRooms/ViewRoomsScreen';
-import LogoutScreen from './Logout/LogoutScreen';
+import LogoutScreen from './Menu/Menu';
 import { UserContext } from '../UserContext/UserContext';
 import BookingDetails from './Booking/BookingDetails';
+import Menu from './Menu/Menu';
+import Logout from '../Logout/Logout';
+import HotelProfile from './Menu/HotelProfile';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 
 const BookingStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: true, headerStyle: { height: 45 }, headerTitleStyle: { fontSize: 22 }, cardStyle: { flex: 1 } }}>
+  <Stack.Navigator screenOptions={{ headerShown: true, headerStyle: { height: 55 }, headerTitleStyle: { fontSize: 22 }, cardStyle: { flex: 1 } }}>
     <Stack.Screen name="Booking List" component={BookingScreen} />
     <Stack.Screen name="BookingDetails" component={BookingDetails} />
   </Stack.Navigator>
@@ -29,14 +32,16 @@ const BookingStack = () => (
 // );
 
 const ViewRoomsStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: true, headerStyle: { height: 45 }, headerTitleStyle: { fontSize: 22 }, cardStyle: { flex: 1 } }}>
+  <Stack.Navigator screenOptions={{ headerShown: true, headerStyle: { height: 55 }, headerTitleStyle: { fontSize: 22 }, cardStyle: { flex: 1 } }}>
     <Stack.Screen name="Hotel Rooms" component={ViewRoomsScreen} />
   </Stack.Navigator>
 );
 
 const LogoutStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false, headerStyle: { height: 45 }, headerTitleStyle: { fontSize: 22 }, cardStyle: { flex: 1 } }}>
-    <Stack.Screen name="Log-out" component={LogoutScreen} />
+  <Stack.Navigator screenOptions={{ headerShown: false, headerStyle: { height: 55 }, headerTitleStyle: { fontSize: 22 }, cardStyle: { flex: 1 } }}>
+    <Stack.Screen name="Menu-" component={Menu} />
+    <Stack.Screen name="HotelProfile" component={HotelProfile} />
+    <Stack.Screen name="Log-out" component={Logout} />
   </Stack.Navigator>
 );
 
@@ -87,10 +92,10 @@ const HotelDashboard = () => {
           {() => <ViewRoomsStack />}
         </Tab.Screen>
         <Tab.Screen 
-          name="Logout" 
+          name="Menu" 
           options={{
             tabBarIcon: ({ color, size }) => (
-              <MaterialCommunityIcons name="logout" size={25} color="white" />
+                <MaterialIcons name="menu-book" size={24} color="white" />
             ),
           }}
         >

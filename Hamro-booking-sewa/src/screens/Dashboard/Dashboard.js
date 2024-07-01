@@ -24,7 +24,7 @@ const Stack = createStackNavigator();
 
 const HomeStack = ({ setScrollDirection }) => (
   <Stack.Navigator screenOptions={{ headerShown: true , headerStyle: {
-    height: 45,
+    height: 55,
   },
   headerTitleStyle: {
     fontSize: 22,
@@ -37,7 +37,7 @@ const HomeStack = ({ setScrollDirection }) => (
 
 const ListHotelsStack = ({ setScrollDirection }) => (
   <Stack.Navigator screenOptions={{ headerShown: true,headerStyle: {
-    height: 45,
+    height: 55,
   },
   headerTitleStyle: {
     fontSize: 22,
@@ -53,7 +53,7 @@ const ListHotelsStack = ({ setScrollDirection }) => (
 
 const BookedHotelsStack = ({ setScrollDirection }) => (
   <Stack.Navigator screenOptions={{ headerShown: true, headerStyle: {
-    height: 50,
+    height: 57,
   },
   headerTitleStyle: {
     fontSize: 22,
@@ -67,7 +67,7 @@ const BookedHotelsStack = ({ setScrollDirection }) => (
 
 const MenuStack = ({ setScrollDirection }) => (
   <Stack.Navigator screenOptions={{ headerShown: true, headerStyle: {
-    height: 40,
+    height: 55,
   },
   headerTitleStyle: {
     fontSize: 20,
