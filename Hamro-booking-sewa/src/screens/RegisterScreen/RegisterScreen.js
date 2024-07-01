@@ -23,10 +23,10 @@ export default function RegisterScreen({ navigation }) {
   const [csrfToken, setCsrfToken] = useState('');
   const [textInputValue, setTextInputValue] = useState('');
 
-  const data = [
-    { key: 0, label: 'Hotel', value: 'hotel' },
-    { key: 1, label: 'User', value: 'user' },
-  ];
+  // const data = [
+  //   { key: 0, label: 'Hotel', value: 'hotel' },
+  //   { key: 1, label: 'User', value: 'user' },
+  // ];
 
   useEffect(() => {
     fetch(Server.primaryUrl+'/csrf-token', {
@@ -52,13 +52,13 @@ export default function RegisterScreen({ navigation }) {
 
   const onSignUpPressed = () => {
     const nameError = nameValidator(name.value);
-    const categoryError = categoryNameValidator(category.value);
+    // const categoryError = categoryNameValidator(category.value);
     const emailError = emailValidator(email.value);
     const passwordError = passwordValidator(password.value);
     const phoneNumberError = phoneNumberValidator(phoneNumber.value);
-    if (emailError || passwordError || nameError || categoryError || phoneNumberError) {
+    if (emailError || passwordError || nameError  || phoneNumberError) {
       setName({ ...name, error: nameError });
-      setCategory({ ...category, error: categoryError });
+      // setCategory({ ...category, error: categoryError });
       setEmail({ ...email, error: emailError });
       setPassword({ ...password, error: passwordError });
       setPhoneNumber({ ...phoneNumber, error: phoneNumberError });
@@ -67,7 +67,7 @@ export default function RegisterScreen({ navigation }) {
 
     const formData = {
       name: name.value,
-      category: category.value,
+      category: 'user',
       email: email.value,
       password: password.value,
       phone_number: phoneNumber.value,
@@ -119,7 +119,7 @@ export default function RegisterScreen({ navigation }) {
               />
               {name.error && <Text style={styles.error}>{name.error}</Text>}
             </View>
-            <View style={styles.inputContainer}>
+            {/* <View style={styles.inputContainer}>
               <ModalSelector
                 data={data}
                 initValue="Select a category"
@@ -143,7 +143,7 @@ export default function RegisterScreen({ navigation }) {
                 </TouchableOpacity>
               </ModalSelector>
               {category.error && <Text style={styles.error}>{category.error}</Text>}
-            </View>
+            </View> */}
             <View style={styles.inputContainer}>
               <PaperTextInput
                 label="Email"
