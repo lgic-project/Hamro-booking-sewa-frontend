@@ -42,13 +42,13 @@ const RoomDetailsScreen = ({ route }) => {
             <Text style={styles.description}>{room.description}</Text>
             <Text style={styles.price}>Price: {room.price}</Text>
             <Text style={[styles.availability, { color: availabilityColor }]}>Availability: {room.is_available ? "Available" : "Not Available"}</Text>
-            <Button
+            {/* <Button
               mode="outlined"
               style={styles.button}
               onPress={() => navigation.navigate('GalleryScreen', { room })}
             >
               View Gallery
-            </Button>
+            </Button> */}
           </Card.Content>
         </Card>
       </View>

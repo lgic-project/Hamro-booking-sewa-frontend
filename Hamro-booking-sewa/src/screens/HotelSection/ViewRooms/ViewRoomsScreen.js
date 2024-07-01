@@ -74,17 +74,17 @@ const BookingScreen = () => {
 
       {selectedRoom && (
         <Modal
-          animationType="slide"
+          animationType="fade"
           transparent={true}
           visible={modalVisible}
           onRequestClose={() => setModalVisible(false)}
         >
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Room Details</Text>
+              {/* <Text style={styles.modalTitle}>Room Details</Text> */}
               <Image source={{ uri: `${imageURL}${selectedRoom.room_thumbnail}` }} style={styles.modalImage} />
-              <Text style={styles.modalText}>Title: {selectedRoom.title}</Text>
-              <Text style={styles.modalText}>Description: {selectedRoom.description}</Text>
+              <Text style={styles.modalText}>Room Type: {selectedRoom.title}</Text>
+              <Text style={styles.modalText}>{selectedRoom.description}</Text>
               <Text style={styles.modalText}>Price: {selectedRoom.price}</Text>
               <Text style={styles.modalText}>Total Rooms: {selectedRoom.total_rooms}</Text>
               <TouchableOpacity
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   roomImage: {
-    width: 80,
+    width: 100,
     height: 80,
     borderRadius: 8,
     marginRight: 16,
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
   modalContent: {
     width: '80%',
     backgroundColor: '#fff',
-    padding: 20,
+    padding: 10,
     borderRadius: 8,
     alignItems: 'center',
   },
@@ -169,9 +169,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   modalImage: {
-    width: 200,
-    height: 200,
-    borderRadius: 8,
+    width: '100%',
+    height: '40%',
+    borderRadius: 2,
     marginBottom: 20,
   },
   modalText: {
@@ -181,9 +181,9 @@ const styles = StyleSheet.create({
   closeButton: {
     marginTop: 20,
     backgroundColor: '#3134a4',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 8,
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 10,
   },
   closeButtonText: {
     color: '#fff',
