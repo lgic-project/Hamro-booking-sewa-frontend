@@ -109,19 +109,19 @@ const HotelDashboard = () => {
 const styles = StyleSheet.create({
   tabBarStyle: {
     position: "absolute",
-    bottom: 10,
+    bottom: 5,
     left: 10,
     right: 10,
-    elevation: 0,
+    elevation: 5,
     backgroundColor: "#3134a4",
     borderRadius: 15,
-    height: 70,
+    height: 50,
     shadowOffset: {
         width: 0,
         height: 3,
     },
     shadowColor: 'black',
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.5,
     shadowRadius: 4.65,
     elevation: 10,
   },
