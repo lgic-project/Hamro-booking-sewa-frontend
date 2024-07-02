@@ -1,57 +1,96 @@
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
-import { Card, Text } from 'react-native-paper';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { View, StyleSheet, FlatList, ActivityIndicator, TextInput } from 'react-native';
+import { Card, Text, Button } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
 import Server from '../../../Server/Server';
+import useScrollDirection from '../../../ScrollDirection/useScrollDirection';
 
-const ListHotelsScreen = () => {
+
+const ListHotelsScreen = ({ setScrollDirection }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const apiUrl = Server.primaryUrl+"/json-owner";
-  const homeUrl = "http://192.168.1.71:8000/images/hotel/";
   const [searchQuery, setSearchQuery] = useState('');
+  const apiUrl = Server.primaryUrl + "/json-owner";
+  const homeUrl = Server.primaryUrl + "/images/hotel/";
 
-  const fetchData = () => {
-    fetch(apiUrl)
-      .then((response) => response.json())
-      .then((json) => setData(json))
-      .catch((error) => console.error(error))
-      .finally(() => {
-        setLoading(false);
-        setRefreshing(false);
-      });
-  };
+  const navigation = useNavigation();
+  const flatListRef = useRef(null);
+  const { isScrollingDown, onScroll } = useScrollDirection(flatListRef);
 
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    setScrollDirection(isScrollingDown);
+  }, [isScrollingDown]);
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch(apiUrl);
+      const json = await response.json();
+      setData(json);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
 
   const onRefresh = () => {
     setRefreshing(true);
     fetchData();
   };
 
+  const filteredData = data.filter(item =>
+    item.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const renderItem = useCallback(({ item }) => (
+    <View style={styles.cardContainer}>
+      <Card style={styles.card}>
+        <Card.Cover
+          style={styles.icon}
+          source={{ uri: homeUrl + item.photos }}
+          onError={() => console.log('Error loading image')}
+        />
+        <Card.Content style={styles.cardContent}>
+          <View style={styles.textContainer}>
+            <Text style={styles.title}>{item.title}</Text>
+            <Button mode="contained" onPress={() => {
+              navigation.navigate('HotelDetails', { hotel: item });
+            }}>
+              View Details
+            </Button>
+          </View>
+        </Card.Content>
+      </Card>
+    </View>
+  ), []);
+
   return (
     <View style={styles.container}>
+      <TextInput
+        style={styles.searchBar}
+        placeholder="Search hotels..."
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+      />
       {loading ? (
         <ActivityIndicator animating={true} color={'blue'} size={'large'} />
       ) : (
         <FlatList
-          data={data}
-          renderItem={({ item }) => (
-            <Card style={styles.card}>
-              <Card.Cover style={styles.icon} source={{uri: Server.primaryUrl +'/images/hotel/'+ item.photos}} onError={() => console.log('Error loading image')} />
-              <Card.Title title={item.title} subtitle={item.location} />
-              <Card.Content>
-                <Text style={{ fontSize: 15, color: 'red' }}>Contact: {item.phone_number}</Text>
-                <Text style={{ fontSize: 15, color: 'blue' }}>Email: {item.email}</Text>
-              </Card.Content>
-            </Card>
-          )}
+          ref={flatListRef}
+          data={filteredData}
+          renderItem={renderItem}
           keyExtractor={(item, index) => index.toString()}
           contentContainerStyle={styles.flatListContent}
           refreshing={refreshing}
           onRefresh={onRefresh}
+          onScroll={onScroll}
+          scrollEventThrottle={16}
         />
       )}
     </View>
@@ -63,22 +102,50 @@ export default ListHotelsScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#f0f0f0',
     padding: 10,
-    margin: 5,
+  },
+  searchBar: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 10,
+    paddingHorizontal: 8,
+    borderRadius: 5,
   },
   flatListContent: {
     paddingBottom: 20,
-    justifyContent: "center",
-    alignContent: "center",
   },
   icon: {
-    flex: 1,
-    height: 200,
-    width: "auto",
-    resizeMode: "contain",
+    height: 150,
+    resizeMode: 'cover',
+  },
+  cardContainer: {
+    marginBottom: 15,
+    borderRadius: 10,
+    overflow: 'hidden',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    backgroundColor: '#fff',
   },
   card: {
-    marginBottom: 10,
+    borderRadius: 10,
+  },
+  cardContent: {
+    padding: 10,
+    backgroundColor: '#f9f9f9',
+    borderTopWidth: 1,
+    borderColor: '#ddd',
+  },
+  textContainer: {
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 5,
   },
 });

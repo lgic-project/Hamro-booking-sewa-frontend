@@ -1,11 +1,11 @@
 import React, { useContext } from 'react';
 import { View, Text, StyleSheet, Image, Platform } from 'react-native';
 import { Button } from 'react-native-paper';
-import BackButton from '../../../../components/BackButton';
 import { useNavigation } from '@react-navigation/native';
-import { UserContext } from '../../../UserContext/UserContext';
+import { UserContext } from '../../UserContext/UserContext';
+import BackButton from '../../../components/BackButton';
 
-const UserProfile = ({ navigation }) => {
+const HotelProfile = ({ navigation }) => {
   const { user } = useContext(UserContext);
 
   // Debug output to check user object
@@ -23,23 +23,14 @@ const UserProfile = ({ navigation }) => {
 
   const { navigate } = useNavigation();
 
-  const handleEdit = () => {
-    navigate('ProfileEdit', {
-      userName: name,
-      email,
-      phoneNumber: phone_number,
-      userID: id,
-    });
-  };
-
   return (
     <View style={styles.container}>
-      {/* <BackButton goBack={navigation.goBack} /> */}
+        <BackButton goBack={navigation.goBack} />
       <View style={[styles.profileContainer, Platform.OS === 'ios' ? styles.iosShadow : styles.androidShadow]}>
-        <Image source={require('../../../../assets/profile.png')} style={styles.profilePic} />
-        <Text style={styles.category}>Account Type: {category}</Text>
+        <Image source={require('../../../assets/profile.png')} style={styles.profilePic} />
+        <Text style={styles.label}>Account Type : {category}</Text>
         <View style={styles.infoContainer}>
-          <Text style={styles.label}>User Name</Text>
+          <Text style={styles.label}>Hotel Name</Text>
           <Text style={styles.text}>{name}</Text>
           <Text style={styles.label}>Email Address</Text>
           <Text style={styles.text}>{email}</Text>
@@ -126,4 +117,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default UserProfile;
+export default HotelProfile;

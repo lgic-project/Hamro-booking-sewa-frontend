@@ -1,120 +1,146 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { View, StyleSheet, FlatList, ActivityIndicator, TextInput, Modal, TouchableOpacity } from 'react-native';
-import { Card, Text, Button } from 'react-native-paper';
+import React, { useEffect, useState, useRef } from 'react';
+import {
+  View,
+  FlatList,
+  ImageBackground,
+  StyleSheet,
+  Dimensions,
+  Text,
+  TouchableOpacity,
+  Modal,
+  ScrollView,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Server from '../../../Server/Server';
+import useScrollDirection from '../../../ScrollDirection/useScrollDirection';
 
-const HomeScreen = () => {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+const HomeScreen = ( {setScrollDirection} ) => {
+  const imageListRef = useRef(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [hotels, setHotels] = useState([]);
+  const [selectedHotel, setSelectedHotel] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
-  const apiUrl = Server.primaryUrl+"/hotel/json-room";
-  const homeUrl = Server.primaryUrl+"/images/hotel/";
-
   const navigation = useNavigation();
+  const flatListRef = useRef(null);
+  const { isScrollingDown, onScroll } = useScrollDirection(flatListRef);
 
-  const fetchData = async () => {
-    try {
-      const response = await fetch(apiUrl);
-      const json = await response.json();
-      setData(json);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  };
+  const apiURL = Server.primaryUrl;
+  const imgURL = `${apiURL}/images/hotel/`;
+  const hotelURL = `${apiURL}/json-owner`;
+
+  const images = [
+    "https://lh3.googleusercontent.com/p/AF1QipNcEIaRBJo0A6JiEKVJOOj8UklvaPlnrCmNwPHZ=s1360-w1360-h1020",
+    "https://lh3.googleusercontent.com/p/AF1QipPNUFqmnpslW2HkWUaLFl2grboVryHTGx5gdmkN=s1360-w1360-h1020",
+    "https://i0.wp.com/lakeshore.com.np/wp-content/uploads/2022/03/IMG_4045-HDR.jpg?fit=2500%2C1557&ssl=1",
+    "https://barahi.com/wp-content/themes/yootheme/cache/08/barahi-blurred-088fbfb1.webp",
+    "http://pokharagrande.com/images/slideshow/K266L-pokharagrande.jpg",
+    "https://content.skyscnr.com/available/1490976334/1490976334_WxH.jpg",
+    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/367397409.jpg?k=b506d81cb1a53a2503211821aac75843d04469a1ebdee3c6c685c267ca684531&o=",
+  ];
 
   useEffect(() => {
-    fetchData();
+    const fetchHotels = async () => {
+      try {
+        const response = await fetch(hotelURL);
+        const data = await response.json();
+        setHotels(data);
+        console.log(data);
+      } catch (error) {
+        console.error("Error fetching hotels:", error);
+      }
+    };
+
+    fetchHotels();
   }, []);
 
-  const onRefresh = () => {
-    setRefreshing(true);
-    fetchData();
-  };
+  useEffect(() => {
+    setScrollDirection(isScrollingDown);
+  }, [isScrollingDown]);
 
-  const filteredData = data.filter(item =>
-    item.title.toLowerCase().includes(searchQuery.toLowerCase())
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setCurrentIndex((prevIndex) =>
+        prevIndex === images.length - 1 ? 0 : prevIndex + 1
+      );
+    }, 3000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  useEffect(() => {
+    if (imageListRef.current) {
+      imageListRef.current.scrollToIndex({
+        animated: true,
+        index: currentIndex,
+      });
+    }
+  }, [currentIndex]);
+
+  const renderImageItem = ({ item }) => (
+    <View style={styles.imageContainer}>
+      <ImageBackground source={{ uri: item }} style={styles.sliderImage} />
+    </View>
   );
 
-  const renderItem = useCallback(({ item }) => (
-    <View style={styles.cardContainer}>
-      <Card style={styles.card}>
-        <Card.Cover
-          style={styles.icon}
-          source={{ uri: homeUrl + 'room/' + item.room_thumbnail }}
-          onError={() => console.log('Error loading image')}
-        />
-        <Card.Content style={styles.cardContent}>
-          <View style={styles.textContainer}>
-            <Text style={styles.title}>{item.title}</Text>
-            <Text style={styles.subtitle}>Total Rooms: {item.total_rooms}</Text>
-            <Button mode="contained" onPress={() => {
-              setSelectedItem(item);
-              setModalVisible(true);
-            }}>
-              View Details
-            </Button>
-          </View>
-        </Card.Content>
-      </Card>
+  const renderHotelItem = ({ item }) => (
+    <View style={styles.hotelContainer}>
+      <ImageBackground source={{ uri: `${imgURL}${item.photos}` }} style={styles.hotelImage} />
+      <Text style={styles.hotelName}>{item.title}</Text>
+      <TouchableOpacity
+        style={styles.detailsButton}
+        onPress={() => {
+          setSelectedHotel(item);
+          setModalVisible(true);
+        }}
+      >
+        <Text style={styles.detailsButtonText}>View Details</Text>
+      </TouchableOpacity>
     </View>
-  ), []);
+  );
 
   return (
     <View style={styles.container}>
-      <TextInput
-        style={styles.searchBar}
-        placeholder="Search rooms..."
-        value={searchQuery}
-        onChangeText={setSearchQuery}
+      <FlatList
+        ref={imageListRef}
+        data={images}
+        renderItem={renderImageItem}
+        keyExtractor={(item, index) => index.toString()}
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        onScroll={onScroll}
+        style={styles.slider}
       />
-      {loading ? (
-        <ActivityIndicator animating={true} color={'blue'} size={'large'} />
-      ) : (
-        <FlatList
-          data={filteredData}
-          renderItem={renderItem}
-          keyExtractor={(item, index) => index.toString()}
-          contentContainerStyle={styles.flatListContent}
-          refreshing={refreshing}
-          onRefresh={onRefresh}
-        />
-      )}
-      {selectedItem && (
+      <FlatList
+        data={hotels}
+        renderItem={renderHotelItem}
+        keyExtractor={(item) => item.id.toString()}
+        style={styles.hotelList}
+      />
+      {selectedHotel && (
         <Modal
-          visible={modalVisible}
-          transparent={true}
           animationType="slide"
+          transparent={true}
+          visible={modalVisible}
           onRequestClose={() => setModalVisible(false)}
         >
-          <View style={styles.modalBackground}>
-            <View style={styles.modalContainer}>
-              <Card style={styles.modalCard}>
-                <Card.Cover
-                  style={styles.icon}
-                  source={{ uri: homeUrl + 'room/' + selectedItem.room_thumbnail }}
-                  onError={() => console.log('Error loading image')}
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>{selectedHotel.name}</Text>
+              <ScrollView>
+                <ImageBackground
+                  source={{ uri: `${imgURL}${selectedHotel.photos}` }}
+                  style={styles.modalImage}
                 />
-                <Card.Title title={selectedItem.title} subtitle={`Total Rooms: ${selectedItem.total_rooms}`} />
-                <Card.Content>
-                  <Text style={styles.priceText}>Price: {selectedItem.price}</Text>
-                  <Text style={styles.availableText}>Available: {selectedItem.is_available ? 'Yes' : 'No'}</Text>
-                  <Text style={styles.descriptionText}>{selectedItem.description}</Text>
-                </Card.Content>
-                <Card.Actions>
-                  <Button onPress={() => setModalVisible(false)}>Close</Button>
-                  <Button onPress={() => {
-                    setModalVisible(false);
-                    navigation.navigate('Booking', { room: selectedItem });
-                  }}>Book Now</Button>
-                </Card.Actions>
-              </Card>
+                <Text style={styles.modalDescription}>{selectedHotel.description}</Text>
+                {/* Add more detailed information here */}
+              </ScrollView>
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setModalVisible(false)}
+              >
+                <Text style={styles.closeButtonText}>Close</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </Modal>
@@ -123,89 +149,93 @@ const HomeScreen = () => {
   );
 };
 
-export default HomeScreen;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f0f0f0',
-    padding: 10,
   },
-  searchBar: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 10,
-    paddingHorizontal: 8,
-    borderRadius: 5,
+  slider: {
+    height: Dimensions.get('window').width * 0.6,
   },
-  flatListContent: {
-    paddingBottom: 20,
+  imageContainer: {
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').width * 0.6,
   },
-  icon: {
-    height: 150,
-    resizeMode: 'cover',
+  sliderImage: {
+    width: '100%',
+    height: '100%',
   },
-  cardContainer: {
-    marginBottom: 15,
+  hotelList: {
+    marginTop: 20,
+  },
+  hotelContainer: {
+    marginBottom: 20,
+    backgroundColor: '#fff',
     borderRadius: 10,
     overflow: 'hidden',
-    elevation: 3, // Adds a subtle shadow on Android
-    shadowColor: '#000', // Adds a subtle shadow on iOS
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-    backgroundColor: '#fff',
+    elevation: 2,
+    marginHorizontal: 10,
   },
-  card: {
-    borderRadius: 10,
+  hotelImage: {
+    width: '100%',
+    height: 200,
   },
-  cardContent: {
-    padding: 10,
-    backgroundColor: '#f9f9f9',
-    borderTopWidth: 1,
-    borderColor: '#ddd',
-  },
-  textContainer: {
-    alignItems: 'center',
-  },
-  title: {
+  hotelName: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 5,
+    margin: 10,
   },
-  subtitle: {
-    fontSize: 14,
-    marginBottom: 10,
+  detailsButton: {
+    backgroundColor: '#007bff',
+    padding: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    margin: 10,
+    borderRadius: 5,
   },
-  modalBackground: {
+  detailsButtonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  modalContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
-  modalContainer: {
+  modalContent: {
     width: '90%',
-    backgroundColor: 'white',
+    backgroundColor: '#fff',
     borderRadius: 10,
-    overflow: 'hidden',
+    padding: 20,
+    elevation: 5,
   },
-  modalCard: {
-    borderRadius: 10,
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
   },
-  priceText: {
-    fontSize: 15,
-    color: 'red',
-    marginTop: 5,
+  modalImage: {
+    width: '100%',
+    height: 200,
+    marginBottom: 10,
   },
-  availableText: {
-    fontSize: 15,
-    color: 'blue',
-    marginTop: 5,
+  modalDescription: {
+    fontSize: 16,
+    marginBottom: 10,
   },
-  descriptionText: {
-    fontSize: 15,
-    color: '#333',
-    marginTop: 5,
+  closeButton: {
+    backgroundColor: '#007bff',
+    padding: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 5,
+    marginTop: 10,
+  },
+  closeButtonText: {
+    color: '#fff',
+    fontSize: 16,
   },
 });
+
+export default HomeScreen;

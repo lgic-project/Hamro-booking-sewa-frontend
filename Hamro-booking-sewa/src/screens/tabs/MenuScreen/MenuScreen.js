@@ -1,28 +1,48 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
+import React from 'react';
+import { SafeAreaView, StyleSheet, View } from 'react-native';
+import { Button, useTheme } from 'react-native-paper';
 
 const MenuScreen = ({ navigation }) => {
+  const theme = useTheme();
+
+  const handleLogout = () => {
+    // Reset the navigation stack to StartScreen
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'StartScreen' }],
+    });
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.contentContainer}>
-        <TouchableOpacity
-          style={styles.button}
+        <Button
+          mode="contained"
           onPress={() => navigation.navigate('UserProfile')}
-        >
-          <Text style={styles.buttonText}> Profile</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate('Settings')}
+          labelStyle={styles.buttonText}
+          color="#008080" // Teal color
         >
-          <Text style={styles.buttonText}>Settings</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
+          Profile
+        </Button>
+        <Button
+          mode="contained"
+          onPress={() => navigation.navigate('Policies')}
           style={styles.button}
+          labelStyle={styles.buttonText}
+          color="#008080" // Teal color
+        >
+          Terms and Policies
+        </Button>
+        <Button
+          mode="contained"
           onPress={() => navigation.navigate('Logout')}
+          style={[styles.button, styles.logoutButton]} // Additional style for logout button
+          labelStyle={styles.buttonText}
+          color="#FF6347" // Tomato color for logout button
         >
-          <Text style={styles.buttonText}>Logout</Text>
-        </TouchableOpacity>
+          Logout
+        </Button>
       </View>
     </SafeAreaView>
   );
@@ -31,29 +51,27 @@ const MenuScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f8f8',
-    paddingTop: 70, // Adjust top padding as needed
-    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    paddingTop: 40,
   },
   contentContainer: {
     flex: 1,
     alignItems: 'center',
-    width: '100%',
-    paddingTop: 60, // Add some top padding to push content down
+    justifyContent: 'center',
+    paddingHorizontal: 20,
   },
   button: {
-    backgroundColor: '#841584',
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 25,
     marginVertical: 10,
-    alignItems: 'center',
-    width: '80%', // Make button width responsive
+    width: '100%',
+    backgroundColor: '#1877F2', // Teal color
   },
   buttonText: {
-    color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
+    color: '#FFFFFF',
+  },
+  logoutButton: {
+    backgroundColor: '#FF6347', // Tomato color
   },
 });
 
